@@ -31,7 +31,13 @@ export default function BestsellersPage() {
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
                     <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Cup&co</span>
                     <button 
-                      onClick={addToCart}
+                      onClick={() => addToCart({
+                        id: 1,
+                        name: 'Cup&co Utensils',
+                        price: 'Kes 999',
+                        image: '/product-utensils-green.png',
+                        category: 'Utensils'
+                      })}
                       className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
                     >
                       Shop
@@ -46,7 +52,13 @@ export default function BestsellersPage() {
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
                     <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Ecospoonery</span>
                     <button 
-                      onClick={addToCart}
+                      onClick={() => addToCart({
+                        id: 2,
+                        name: 'Ecospoonery Bamboo',
+                        price: 'Kes 1,200',
+                        image: '/product-utensils-bamboo.png',
+                        category: 'Utensils'
+                      })}
                       className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
                     >
                       Shop
@@ -61,7 +73,13 @@ export default function BestsellersPage() {
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
                     <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Naturesip</span>
                     <button 
-                      onClick={addToCart}
+                      onClick={() => addToCart({
+                        id: 3,
+                        name: 'Naturesip Fridge',
+                        price: 'Kes 4,500',
+                        image: '/product-fridge.png',
+                        category: 'Kitchenware'
+                      })}
                       className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
                     >
                       Shop
@@ -76,7 +94,13 @@ export default function BestsellersPage() {
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
                     <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Naturesip</span>
                     <button 
-                      onClick={addToCart}
+                      onClick={() => addToCart({
+                        id: 4,
+                        name: 'Naturesip Flask',
+                        price: 'Kes 1,500',
+                        image: '/product-drinkware.png',
+                        category: 'Drinkware'
+                      })}
                       className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
                     >
                       Shop

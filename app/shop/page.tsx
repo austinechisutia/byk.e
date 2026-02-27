@@ -121,7 +121,7 @@ export default function ShopPage() {
                         <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-200/50">
                             <span className="text-gray-900 font-bold text-lg">{product.price}</span>
                             <button 
-                                onClick={addToCart}
+                                onClick={() => addToCart(product)}
                                 className="bg-[#11430F] text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black transition-colors duration-300 text-xl"
                             >
                                 +

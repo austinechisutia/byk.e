@@ -40,7 +40,13 @@ const BestsellersSection = () => {
                     <div className="flex justify-between items-end mt-auto">
                         <span className="text-gray-900 font-medium">Kes 999</span>
                         <button 
-                            onClick={addToCart}
+                            onClick={() => addToCart({
+                                id: 101,
+                                name: 'Utencils holder',
+                                price: 'Kes 999',
+                                image: '/product-utensils-green.png',
+                                category: 'Utensils'
+                            })}
                             className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition"
                         >
                             + Cart
@@ -67,7 +73,13 @@ const BestsellersSection = () => {
                     <div className="flex justify-between items-end mt-auto">
                         <span className="text-gray-900 font-medium">Kes 999</span>
                         <button 
-                            onClick={addToCart}
+                            onClick={() => addToCart({
+                                id: 102,
+                                name: 'Bamboo Made Utencils holder',
+                                price: 'Kes 999',
+                                image: '/product-utensils-bamboo.png',
+                                category: 'Utensils'
+                            })}
                             className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition"
                         >
                             + Cart
@@ -94,7 +106,13 @@ const BestsellersSection = () => {
                     <div className="flex justify-between items-end mt-auto">
                         <span className="text-gray-900 font-medium">Kes 999</span>
                         <button 
-                            onClick={addToCart}
+                            onClick={() => addToCart({
+                                id: 103,
+                                name: 'Fridge',
+                                price: 'Kes 999',
+                                image: '/product-fridge.png',
+                                category: 'Kitchenware'
+                            })}
                             className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition"
                         >
                             + Cart
@@ -121,7 +139,13 @@ const BestsellersSection = () => {
                     <div className="flex justify-between items-end mt-auto">
                         <span className="text-gray-900 font-medium">Kes 999</span>
                         <button 
-                            onClick={addToCart}
+                            onClick={() => addToCart({
+                                id: 104,
+                                name: 'Reusable drinkware',
+                                price: 'Kes 999',
+                                image: '/product-drinkware.png',
+                                category: 'Drinkware'
+                            })}
                             className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition"
                         >
                             + Cart

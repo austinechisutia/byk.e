@@ -5,13 +5,14 @@ import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
+import CartDrawer from './CartDrawer';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { cartCount } = useCart();
+  const { cartCount, setIsCartOpen } = useCart();
   const pathname = usePathname();
-  const isDarkTheme = pathname === '/bestsellers' || pathname === '/gallery' || pathname === '/shop' || pathname === '/about';
+  const isDarkTheme = pathname === '/bestsellers' || pathname === '/gallery' || pathname === '/shop' || pathname === '/about' || pathname === '/checkout';
   
   useEffect(() => {
     const handleScroll = () => {
@@ -82,7 +83,10 @@ const Navbar = () => {
                  <Search className={`absolute left-3 w-4 h-4 font-bold ${isDarkTheme || isScrolled ? 'text-gray-500' : 'text-gray-800'}`} />
                  <input type="text" placeholder="Search Product" className={`pl-9 pr-4 py-2 text-sm text-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-[#e4f386] w-36 lg:w-56 font-medium ${searchBg}`} />
             </div>
-            <button className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition relative ${iconBg}`}>
+            <button 
+              onClick={() => setIsCartOpen(true)}
+              className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition relative ${iconBg}`}
+            >
                  <ShoppingBag className={`w-4 h-4 md:w-5 md:h-5 ${textColor}`} />
                  {cartCount > 0 && (
                    <span className="absolute -top-1 -right-1 bg-[#11430F] text-[#e4f386] text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
@@ -96,6 +100,8 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
+
+      <CartDrawer />
 
       {/* Mobile Navigation Mesh Overlay */}
       {isMenuOpen && (
