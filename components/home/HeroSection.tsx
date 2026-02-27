@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 const HeroSection = () => {
     return (
@@ -26,9 +27,9 @@ const HeroSection = () => {
                    <p className="max-w-md text-gray-200 text-base md:text-[1.1rem] mb-8 md:mb-10 font-light opacity-90 leading-relaxed inline-block">
                        The eco-friendly kitchenware niche with a sense<br className="hidden md:block" /> of agency, much like original banner.
                    </p>
-                   <button className="bg-[#e4f386] hover:bg-[#d8e874] text-black rounded-[2rem] px-6 md:px-8 py-2.5 md:py-3 text-xl md:text-2xl font-medium flex items-center gap-3 transition-transform hover:scale-105">
+                   <Link href="/shop" className="bg-[#e4f386] hover:bg-[#d8e874] text-black rounded-[2rem] px-6 md:px-8 py-2.5 md:py-3 text-xl md:text-2xl font-medium flex items-center gap-3 transition-transform hover:scale-105">
                        Shop now <span className="text-2xl md:text-3xl font-light mt-[-4px]">&rarr;</span>
-                   </button>
+                   </Link>
               </div>
 
               {/* Right side floating box */}

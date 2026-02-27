@@ -42,6 +42,16 @@ export default function GalleryPage() {
     }
   ];
 
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      const scrollTo = direction === 'left' ? scrollLeft - clientWidth : scrollLeft + clientWidth;
+      scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
+    }
+  };
+
   return (
     <main className="bg-[#f9f9f7] min-h-screen pt-24 md:pt-32 pb-16 md:pb-24 overflow-hidden">
       <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 font-sans tracking-wide">
@@ -53,17 +63,26 @@ export default function GalleryPage() {
             and inspiration <span className="font-serif italic font-medium">Gallery</span>
           </h1>
           <div className="flex gap-4">
-            <button className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-gray-300 flex items-center justify-center text-gray-400 hover:bg-gray-100 transition">
+            <button 
+              onClick={() => scroll('left')}
+              className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-gray-300 flex items-center justify-center text-gray-400 hover:bg-gray-100 transition"
+            >
               <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
             </button>
-            <button className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#11430F] flex items-center justify-center text-white hover:opacity-90 transition">
+            <button 
+              onClick={() => scroll('right')}
+              className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#11430F] flex items-center justify-center text-white hover:opacity-90 transition"
+            >
               <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
             </button>
           </div>
         </div>
 
         {/* Gallery Slider/Grid */}
-        <div className="flex gap-4 md:gap-6 overflow-x-auto pb-8 no-scrollbar scroll-smooth">
+        <div 
+          ref={scrollRef}
+          className="flex gap-4 md:gap-6 overflow-x-auto pb-8 no-scrollbar scroll-smooth"
+        >
           {images.map((img, index) => (
             <div 
               key={index} 

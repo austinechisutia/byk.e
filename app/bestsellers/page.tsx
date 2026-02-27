@@ -1,6 +1,11 @@
+'use client';
+
 import React from 'react';
+import Link from 'next/link';
+import { useCart } from '@/context/CartContext';
 
 export default function BestsellersPage() {
+  const { addToCart } = useCart();
   return (
     <main className="bg-white min-h-screen pt-24 md:pt-32 pb-16 md:pb-24">
       <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 font-sans tracking-wide">
@@ -11,9 +16,9 @@ export default function BestsellersPage() {
             Explore our Thoughtful and <br className="hidden sm:block" />
             Planet-first <span className="font-serif italic font-medium">Products</span>
           </h1>
-          <button className="flex items-center gap-2 text-xl md:text-2xl text-[#11430F] hover:opacity-80 transition font-medium">
+          <Link href="/shop" className="flex items-center gap-2 text-xl md:text-2xl text-[#11430F] hover:opacity-80 transition font-medium">
              More products <span className="text-2xl md:text-3xl mt-[-4px]">&rarr;</span>
-          </button>
+          </Link>
         </div>
 
         {/* Product Cards Grid */}
@@ -25,7 +30,12 @@ export default function BestsellersPage() {
                 <div className="relative z-10 flex flex-col items-center text-white">
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
                     <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Cup&co</span>
-                    <button className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition">Shop</button>
+                    <button 
+                      onClick={addToCart}
+                      className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
+                    >
+                      Shop
+                    </button>
                 </div>
             </div>
 
@@ -35,7 +45,12 @@ export default function BestsellersPage() {
                 <div className="relative z-10 flex flex-col items-center text-white">
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
                     <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Ecospoonery</span>
-                    <button className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition">Shop</button>
+                    <button 
+                      onClick={addToCart}
+                      className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
+                    >
+                      Shop
+                    </button>
                 </div>
             </div>
 
@@ -45,7 +60,12 @@ export default function BestsellersPage() {
                 <div className="relative z-10 flex flex-col items-center text-white">
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
                     <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Naturesip</span>
-                    <button className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition">Shop</button>
+                    <button 
+                      onClick={addToCart}
+                      className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
+                    >
+                      Shop
+                    </button>
                 </div>
             </div>
 
@@ -55,7 +75,12 @@ export default function BestsellersPage() {
                 <div className="relative z-10 flex flex-col items-center text-white">
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
                     <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Naturesip</span>
-                    <button className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition">Shop</button>
+                    <button 
+                      onClick={addToCart}
+                      className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
+                    >
+                      Shop
+                    </button>
                 </div>
             </div>
 

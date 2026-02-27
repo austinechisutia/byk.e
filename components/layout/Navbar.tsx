@@ -4,10 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useCart } from '@/context/CartContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { cartCount } = useCart();
   const pathname = usePathname();
   const isDarkTheme = pathname === '/bestsellers' || pathname === '/gallery' || pathname === '/shop' || pathname === '/about';
   
@@ -44,9 +46,19 @@ const Navbar = () => {
         <div className="flex items-center justify-between w-full max-w-[1400px] mx-auto relative">
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-10 font-semibold text-lg">
-            {navLinks.map((link) => (
-              <Link key={link.name} href={link.href} className={hoverColor}>{link.name}</Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link 
+                  key={link.name} 
+                  href={link.href} 
+                  className={`relative py-1 transition-all duration-300 ${hoverColor} ${isActive ? 'opacity-100' : 'opacity-80'}`}
+                >
+                  {link.name}
+                  <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-current transition-transform duration-300 origin-left ${isActive ? 'scale-x-100' : 'scale-x-0'}`}></span>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Mobile Menu Button */}
@@ -70,8 +82,13 @@ const Navbar = () => {
                  <Search className={`absolute left-3 w-4 h-4 font-bold ${isDarkTheme || isScrolled ? 'text-gray-500' : 'text-gray-800'}`} />
                  <input type="text" placeholder="Search Product" className={`pl-9 pr-4 py-2 text-sm text-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-[#e4f386] w-36 lg:w-56 font-medium ${searchBg}`} />
             </div>
-            <button className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition ${iconBg}`}>
+            <button className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition relative ${iconBg}`}>
                  <ShoppingBag className={`w-4 h-4 md:w-5 md:h-5 ${textColor}`} />
+                 {cartCount > 0 && (
+                   <span className="absolute -top-1 -right-1 bg-[#11430F] text-[#e4f386] text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                     {cartCount}
+                   </span>
+                 )}
             </button>
             <button className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition ${iconBg}`}>
                  <User className={`w-4 h-4 md:w-5 md:h-5 ${textColor}`} />

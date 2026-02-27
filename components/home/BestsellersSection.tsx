@@ -1,6 +1,11 @@
+'use client';
+
 import React from 'react';
+import Link from 'next/link';
+import { useCart } from '@/context/CartContext';
 
 const BestsellersSection = () => {
+    const { addToCart } = useCart();
     return (
       <section className="w-full max-w-[1400px] mx-auto px-6 md:px-12 pt-16 md:pt-24 font-sans tracking-wide">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6 md:gap-0">
@@ -10,9 +15,9 @@ const BestsellersSection = () => {
                     Bestselling <span className="font-serif italic font-normal">Products</span>
                 </h3>
             </div>
-            <button className="flex items-center gap-2 text-xl md:text-2xl text-[#11430F] hover:opacity-80 transition font-medium">
+            <Link href="/shop" className="flex items-center gap-2 text-xl md:text-2xl text-[#11430F] hover:opacity-80 transition font-medium">
                 More products <span className="text-2xl md:text-3xl mt-[-4px]">&rarr;</span>
-            </button>
+            </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -33,7 +38,12 @@ const BestsellersSection = () => {
                     </div>
                     <div className="flex justify-between items-end mt-auto">
                         <span className="text-gray-900 font-medium">Kes 999</span>
-                        <button className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition">+ Cart</button>
+                        <button 
+                            onClick={addToCart}
+                            className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition"
+                        >
+                            + Cart
+                        </button>
                     </div>
                 </div>
             </div>
@@ -55,7 +65,12 @@ const BestsellersSection = () => {
                     </div>
                     <div className="flex justify-between items-end mt-auto">
                         <span className="text-gray-900 font-medium">Kes 999</span>
-                        <button className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition">+ Cart</button>
+                        <button 
+                            onClick={addToCart}
+                            className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition"
+                        >
+                            + Cart
+                        </button>
                     </div>
                 </div>
             </div>
@@ -77,7 +92,12 @@ const BestsellersSection = () => {
                     </div>
                     <div className="flex justify-between items-end mt-auto">
                         <span className="text-gray-900 font-medium">Kes 999</span>
-                        <button className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition">+ Cart</button>
+                        <button 
+                            onClick={addToCart}
+                            className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition"
+                        >
+                            + Cart
+                        </button>
                     </div>
                 </div>
             </div>
@@ -99,7 +119,12 @@ const BestsellersSection = () => {
                     </div>
                     <div className="flex justify-between items-end mt-auto">
                         <span className="text-gray-900 font-medium">Kes 999</span>
-                        <button className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition">+ Cart</button>
+                        <button 
+                            onClick={addToCart}
+                            className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition"
+                        >
+                            + Cart
+                        </button>
                     </div>
                 </div>
             </div>
