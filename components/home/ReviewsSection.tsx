@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import ScrollReveal from '../layout/ScrollReveal';
 
 const ReviewsSection = () => {
     const reviews = [
@@ -35,7 +36,7 @@ const ReviewsSection = () => {
             <div className="bg-[#e5e5e0]/60 rounded-[3rem] p-8 md:p-16">
                 
                 {/* Header Area */}
-                <div className="flex flex-col md:flex-row items-center md:items-start justify-between mb-16 gap-8 md:gap-0">
+                <ScrollReveal direction="down" className="flex flex-col md:flex-row items-center md:items-start justify-between mb-16 gap-8 md:gap-0">
                     <div className="relative flex items-center h-32 md:h-48">
                         <span className="text-8xl md:text-[10rem] font-serif italic tracking-tighter leading-none text-gray-900 pr-4">4.9</span>
                         <div className="relative h-full flex items-center">
@@ -53,13 +54,14 @@ const ReviewsSection = () => {
                             Eco- Products
                         </p>
                     </div>
-                </div>
+                </ScrollReveal>
 
                 {/* Reviews Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {reviews.map((review, index) => (
-                        <div 
+                        <ScrollReveal 
                             key={index} 
+                            delay={index * 0.1}
                             className={`rounded-3xl p-8 flex flex-col justify-between aspect-[3/4] ${review.active ? 'bg-white shadow-xl' : 'bg-white/40'}`}
                         >
                             <div className="text-[#ff8a8a] text-6xl font-serif leading-none mb-4">
@@ -72,7 +74,7 @@ const ReviewsSection = () => {
                                 <p className="text-gray-900 font-serif text-xl font-medium mb-0.5">{review.name}</p>
                                 <p className="font-[family-name:var(--font-great-vibes)] text-2xl text-gray-500 leading-none">{review.role}</p>
                             </div>
-                        </div>
+                        </ScrollReveal>
                     ))}
                 </div>
 

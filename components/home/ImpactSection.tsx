@@ -1,10 +1,11 @@
 import React from 'react';
+import ScrollReveal from '../layout/ScrollReveal';
 
 const ImpactSection = () => {
     return (
       <section className="w-full max-w-[1400px] mx-auto px-6 md:px-12 pt-12 md:pt-16 pb-12 font-sans tracking-wide">
         {/* Large Image Block */}
-        <div className="relative w-full h-[400px] md:h-[600px] rounded-2xl overflow-hidden shadow-lg mb-8">
+        <ScrollReveal className="relative w-full h-[400px] md:h-[600px] rounded-2xl overflow-hidden shadow-lg mb-8">
             <img src="/bg-kitchen.png" alt="Kitchen interior" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black/30 md:bg-black/20"></div> {/* Subtle dark overlay for text readability */}
             <div className="absolute bottom-8 md:bottom-12 left-6 md:left-12 max-w-2xl pr-6 md:pr-0">
@@ -15,12 +16,12 @@ const ImpactSection = () => {
                     made with sustainable material
                 </p>
             </div>
-        </div>
+        </ScrollReveal>
 
         {/* Feature Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Feature 1 */}
-            <div className="bg-[#E3E3DE] rounded-2xl p-8 flex items-center justify-center gap-6 h-36 transition-transform hover:scale-[1.02]">
+            <ScrollReveal delay={0.1} className="bg-[#E3E3DE] rounded-2xl p-8 flex items-center justify-center gap-6 h-36 transition-transform hover:scale-[1.02]">
                 <div className="bg-white rounded-full w-[4.5rem] h-[4.5rem] flex items-center justify-center shadow-sm shrink-0">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#11430F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="m12 21-1-1C5 14 3 11 3 8a6 6 0 0 1 12 0c0 3-2 6-8 12z"/>
@@ -32,10 +33,10 @@ const ImpactSection = () => {
                     <span className="text-[#11430F] font-serif italic text-xl leading-none mb-1">Natural</span>
                     <span className="text-[#11430F] font-medium text-2xl leading-none">Finish</span>
                 </div>
-            </div>
+            </ScrollReveal>
 
             {/* Feature 2 */}
-            <div className="bg-[#E3E3DE] rounded-2xl p-8 flex items-center justify-center gap-6 h-36 transition-transform hover:scale-[1.02]">
+            <ScrollReveal delay={0.2} className="bg-[#E3E3DE] rounded-2xl p-8 flex items-center justify-center gap-6 h-36 transition-transform hover:scale-[1.02]">
                 <div className="bg-white rounded-full w-[4.5rem] h-[4.5rem] flex items-center justify-center shadow-sm shrink-0">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#689E5F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
@@ -47,10 +48,10 @@ const ImpactSection = () => {
                     <span className="text-[#11430F] font-serif italic text-xl leading-none mb-1">Eco</span>
                     <span className="text-[#11430F] font-medium text-2xl leading-none">Innovation</span>
                 </div>
-            </div>
+            </ScrollReveal>
 
             {/* Feature 3 */}
-            <div className="bg-[#E3E3DE] rounded-2xl p-8 flex items-center justify-center gap-6 h-36 transition-transform hover:scale-[1.02]">
+            <ScrollReveal delay={0.3} className="bg-[#E3E3DE] rounded-2xl p-8 flex items-center justify-center gap-6 h-36 transition-transform hover:scale-[1.02]">
                 <div className="bg-white rounded-full w-[4.5rem] h-[4.5rem] flex items-center justify-center shadow-sm shrink-0">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#11430F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="3" y="11" width="18" height="10" rx="2" stroke="#11430F"/>
@@ -64,7 +65,7 @@ const ImpactSection = () => {
                     <span className="text-[#11430F] font-serif italic text-xl leading-none mb-1">Sustainable</span>
                     <span className="text-[#11430F] font-medium text-2xl leading-none">Material</span>
                 </div>
-            </div>
+            </ScrollReveal>
         </div>
       </section>
     );

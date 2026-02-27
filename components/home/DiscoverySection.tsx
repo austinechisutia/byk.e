@@ -1,13 +1,14 @@
 'use client';
 
 import React from 'react';
+import ScrollReveal from '../layout/ScrollReveal';
 
 const DiscoverySection = () => {
     return (
         <section className="w-full max-w-[1400px] mx-auto px-6 md:px-12 py-16 md:py-24 font-sans">
             
             {/* Overlapping Images Gallery */}
-            <div className="relative flex justify-center items-center h-[300px] sm:h-[400px] md:h-[550px] mb-12 md:mb-20">
+            <ScrollReveal direction="up" className="relative flex justify-center items-center h-[300px] sm:h-[400px] md:h-[550px] mb-12 md:mb-20">
                 {/* Left Image */}
                 <div className="absolute left-[5%] md:left-[10%] w-[35%] aspect-[4/5] rounded-xl md:rounded-2xl overflow-hidden shadow-xl z-10 translate-y-4 md:translate-y-8 border border-white/20">
                     <img src="/product-utensils-bamboo.png" alt="Eco kitchenware 1" className="w-full h-full object-cover" />
@@ -22,10 +23,10 @@ const DiscoverySection = () => {
                 <div className="absolute right-[5%] md:right-[10%] w-[35%] aspect-[4/5] rounded-xl md:rounded-2xl overflow-hidden shadow-xl z-10 translate-y-4 md:translate-y-8 border border-white/20">
                     <img src="/product-drinkware.png" alt="Eco kitchenware 2" className="w-full h-full object-cover" />
                 </div>
-            </div>
+            </ScrollReveal>
 
             {/* Description Text with Chips */}
-            <div className="text-center max-w-4xl mx-auto px-4 md:px-0">
+            <ScrollReveal delay={0.3} className="text-center max-w-4xl mx-auto px-4 md:px-0">
                 <p className="text-2xl sm:text-3xl md:text-5xl font-normal text-gray-800 leading-[1.3] md:leading-[1.4]">
                     Discover our commitment to 
                     <span className="inline-flex items-center gap-2 mx-2">
@@ -42,7 +43,7 @@ const DiscoverySection = () => {
                         <span className="font-medium italic font-serif text-[#11430F]">greener kitchen</span>
                     </span>
                 </p>
-            </div>
+            </ScrollReveal>
 
         </section>
     );
