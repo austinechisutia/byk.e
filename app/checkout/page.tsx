@@ -10,23 +10,29 @@ const CheckoutPage = () => {
     const { cartItems, cartTotal } = useCart();
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState<'card' | 'mpesa'>('card');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const shippingCost = 250;
     const total = cartTotal + shippingCost;
 
     const handleCheckout = (e: React.FormEvent) => {
         e.preventDefault();
         setIsProcessing(true);
+
         // Simulate payment processing
+        // If mpesa, simulate STK push message
+        const processingTime = paymentMethod === 'mpesa' ? 3500 : 2500;
+
         setTimeout(() => {
             setIsProcessing(false);
             setIsSuccess(true);
-        }, 2500);
+        }, processingTime);
     };
 
     if (isSuccess) {
         return (
             <div className="min-h-screen bg-white flex items-center justify-center p-6">
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="max-w-md w-full text-center space-y-6"
@@ -71,7 +77,7 @@ const CheckoutPage = () => {
                                 <div className="space-y-4">
                                     <div>
                                         <label className="block text-sm font-bold text-gray-900 mb-1">Email Address</label>
-                                        <input required type="email" placeholder="you@example.com" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] focus:border-transparent outline-none transition-all placeholder:text-gray-500" />
+                                        <input required type="email" placeholder="you@example.com" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] focus:border-transparent outline-none transition-all placeholder:text-gray-500 text-gray-900" />
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <input type="checkbox" id="newsletter" className="w-4 h-4 text-[#11430F]" />
@@ -89,23 +95,23 @@ const CheckoutPage = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-bold text-gray-900 mb-1">First Name</label>
-                                        <input required type="text" placeholder="First Name" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500" />
+                                        <input required type="text" placeholder="First Name" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-bold text-gray-900 mb-1">Last Name</label>
-                                        <input required type="text" placeholder="Last Name" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500" />
+                                        <input required type="text" placeholder="Last Name" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
                                     </div>
                                     <div className="md:col-span-2">
                                         <label className="block text-sm font-bold text-gray-900 mb-1">Address</label>
-                                        <input required type="text" placeholder="Apartment, suite, etc." className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500" />
+                                        <input required type="text" placeholder="Apartment, suite, etc." className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-bold text-gray-900 mb-1">City</label>
-                                        <input required type="text" placeholder="City" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500" />
+                                        <input required type="text" placeholder="City" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-bold text-gray-900 mb-1">Postal Code</label>
-                                        <input required type="text" placeholder="Postal Code" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500" />
+                                        <input required type="text" placeholder="Postal Code" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
                                     </div>
                                 </div>
                             </section>
@@ -117,10 +123,16 @@ const CheckoutPage = () => {
                                     Payment Method
                                 </h2>
                                 <div className="space-y-4">
-                                    <div className="p-4 border-2 border-[#11430F] bg-[#f8f9f5] rounded-xl flex justify-between items-center">
+                                    {/* Card Option */}
+                                    <div
+                                        onClick={() => setPaymentMethod('card')}
+                                        className={`p-4 border-2 rounded-xl flex justify-between items-center cursor-pointer transition-all ${paymentMethod === 'card' ? 'border-[#11430F] bg-[#f8f9f5]' : 'border-gray-100 hover:border-gray-200'
+                                            }`}
+                                    >
                                         <div className="flex items-center gap-3">
-                                            <div className="w-4 h-4 bg-[#11430F] rounded-full flex items-center justify-center">
-                                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                                            <div className={`w-4 h-4 rounded-full flex items-center justify-center border ${paymentMethod === 'card' ? 'bg-[#11430F] border-[#11430F]' : 'border-gray-300'
+                                                }`}>
+                                                {paymentMethod === 'card' && <div className="w-2 h-2 bg-white rounded-full"></div>}
                                             </div>
                                             <span className="font-medium">Credit Card</span>
                                         </div>
@@ -129,32 +141,83 @@ const CheckoutPage = () => {
                                             <div className="w-8 h-5 bg-gray-200 rounded"></div>
                                         </div>
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                                        <div className="md:col-span-2">
-                                            <input required type="text" placeholder="Card Number" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500" />
+
+                                    {/* M-Pesa Option */}
+                                    <div
+                                        onClick={() => setPaymentMethod('mpesa')}
+                                        className={`p-4 border-2 rounded-xl flex justify-between items-center cursor-pointer transition-all ${paymentMethod === 'mpesa' ? 'border-[#11430F] bg-[#f8f9f5]' : 'border-gray-100 hover:border-gray-200'
+                                            }`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-4 h-4 rounded-full flex items-center justify-center border ${paymentMethod === 'mpesa' ? 'bg-[#11430F] border-[#11430F]' : 'border-gray-300'
+                                                }`}>
+                                                {paymentMethod === 'mpesa' && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                                            </div>
+                                            <span className="font-medium">M-Pesa</span>
                                         </div>
-                                        <div>
-                                            <input required type="text" placeholder="Expiry (MM/YY)" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500" />
-                                        </div>
-                                        <div>
-                                            <input required type="text" placeholder="CVC" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500" />
+                                        <div className="flex gap-2">
+                                            <div className="flex items-center bg-[#49B54A] px-2 py-0.5 rounded text-white text-[10px] font-black tracking-tighter">
+                                                M-PESA
+                                            </div>
                                         </div>
                                     </div>
+
+                                    <AnimatePresence mode="wait">
+                                        {paymentMethod === 'card' ? (
+                                            <motion.div
+                                                key="card-fields"
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: 'auto' }}
+                                                exit={{ opacity: 0, height: 0 }}
+                                                className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 overflow-hidden"
+                                            >
+                                                <div className="md:col-span-2">
+                                                    <input required={paymentMethod === 'card'} type="text" placeholder="Card Number" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
+                                                </div>
+                                                <div>
+                                                    <input required={paymentMethod === 'card'} type="text" placeholder="Expiry (MM/YY)" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
+                                                </div>
+                                                <div>
+                                                    <input required={paymentMethod === 'card'} type="text" placeholder="CVC" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
+                                                </div>
+                                            </motion.div>
+                                        ) : (
+                                            <motion.div
+                                                key="mpesa-fields"
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: 'auto' }}
+                                                exit={{ opacity: 0, height: 0 }}
+                                                className="space-y-4 pt-2 overflow-hidden"
+                                            >
+                                                <div>
+                                                    <label className="block text-sm font-bold text-gray-900 mb-1">M-Pesa Phone Number</label>
+                                                    <input
+                                                        required={paymentMethod === 'mpesa'}
+                                                        type="tel"
+                                                        placeholder="07XX XXX XXX or 01XX XXX XXX"
+                                                        value={phoneNumber}
+                                                        onChange={(e) => setPhoneNumber(e.target.value)}
+                                                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900"
+                                                    />
+                                                    <p className="text-xs text-gray-500 mt-2">You will receive an STK push on your phone to complete the transaction.</p>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </div>
                             </section>
 
                             <button
                                 disabled={isProcessing || cartItems.length === 0}
-                                className={`w-full py-5 rounded-full font-bold text-xl transition-all flex items-center justify-center gap-3 shadow-lg ${
-                                    isProcessing || cartItems.length === 0
-                                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                        : 'bg-[#11430F] text-white hover:bg-black'
-                                }`}
+                                className={`w-full py-5 rounded-full font-bold text-xl transition-all flex items-center justify-center gap-3 shadow-lg ${isProcessing || cartItems.length === 0
+                                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                    : 'bg-[#11430F] text-white hover:bg-black'
+                                    }`}
                             >
                                 {isProcessing ? (
                                     <>
                                         <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                        Processing Payment...
+                                        {paymentMethod === 'mpesa' ? 'Checking Phone...' : 'Processing Payment...'}
                                     </>
                                 ) : (
                                     `Pay Kes ${total.toLocaleString()}`
