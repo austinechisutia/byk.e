@@ -109,10 +109,16 @@ const Navbar = () => {
             </button>
             <button
               onClick={handleUserClick}
-              className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition ${iconBg}`}
-              title={session?.user ? 'Sign out' : 'Sign in or create account'}
+              className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition ${iconBg} relative`}
+              title={session?.user ? `${session.user.email || session.user.name || 'User'} - Click to sign out` : 'Sign in or create account'}
             >
-                 <User className={`w-4 h-4 md:w-5 md:h-5 ${textColor}`} />
+              {session?.user ? (
+                <div className={`w-full h-full rounded-full flex items-center justify-center font-bold text-sm ${textColor} bg-[#11430F]/30`}>
+                  {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
+                </div>
+              ) : (
+                <User className={`w-4 h-4 md:w-5 md:h-5 ${textColor}`} />
+              )}
             </button>
             {session?.user?.name && (
               <span className={`hidden xl:inline text-sm font-medium ${textColor}`}>
