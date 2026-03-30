@@ -4,13 +4,17 @@ import React, { useState, useEffect } from 'react';
 import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
 import { useCart } from '@/context/CartContext';
 import CartDrawer from './CartDrawer';
+import AuthModal from '@/components/auth/AuthModal';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { cartCount, setIsCartOpen } = useCart();
+  const { data: session } = useSession();
   const pathname = usePathname();
   const isDarkTheme = pathname === '/bestsellers' || pathname === '/gallery' || pathname === '/shop' || pathname === '/about' || pathname === '/checkout';
   
@@ -40,6 +44,15 @@ const Navbar = () => {
     { name: 'Gallery', href: '/gallery' },
     { name: 'About', href: '/about' },
   ];
+
+  const handleUserClick = () => {
+    if (session?.user) {
+      void signOut({ callbackUrl: '/' });
+      return;
+    }
+
+    setIsAuthModalOpen(true);
+  };
 
   return (
     <>
@@ -94,14 +107,24 @@ const Navbar = () => {
                    </span>
                  )}
             </button>
-            <button className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition ${iconBg}`}>
+            <button
+              onClick={handleUserClick}
+              className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition ${iconBg}`}
+              title={session?.user ? 'Sign out' : 'Sign in or create account'}
+            >
                  <User className={`w-4 h-4 md:w-5 md:h-5 ${textColor}`} />
             </button>
+            {session?.user?.name && (
+              <span className={`hidden xl:inline text-sm font-medium ${textColor}`}>
+                {session.user.name}
+              </span>
+            )}
           </div>
         </div>
       </nav>
 
       <CartDrawer />
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
 
       {/* Mobile Navigation Mesh Overlay */}
       {isMenuOpen && (
