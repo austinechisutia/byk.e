@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { useCart } from '@/context/CartContext';
 import { CheckCircle2, ChevronLeft, CreditCard, Truck, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
@@ -9,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const CheckoutPageClient = () => {
   const { cartItems, cartTotal, clearCart } = useCart();
+  const { data: session } = useSession();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'mpesa'>('card');
@@ -16,6 +18,17 @@ const CheckoutPageClient = () => {
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+
+  useEffect(() => {
+    if (session?.user) {
+      if (session.user.email) setEmail(session.user.email);
+      if (session.user.name) {
+        const parts = session.user.name.trim().split(' ');
+        setFirstName(parts[0] ?? '');
+        setLastName(parts.slice(1).join(' ') ?? '');
+      }
+    }
+  }, [session]);
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [postalCode, setPostalCode] = useState('');
