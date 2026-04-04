@@ -25,12 +25,17 @@ function hasCartDelegates(client: PrismaClient | undefined) {
   const prismaWithCart = client as PrismaClient & {
     cart?: unknown;
     cartItem?: unknown;
+    order?: unknown;
   };
 
-  return typeof prismaWithCart.cart !== 'undefined' && typeof prismaWithCart.cartItem !== 'undefined';
+  return (
+    typeof prismaWithCart.cart !== 'undefined' &&
+    typeof prismaWithCart.cartItem !== 'undefined' &&
+    typeof prismaWithCart.order !== 'undefined'
+  );
 }
 
-const prismaClient: PrismaClient = hasCartDelegates(global.prisma)
+const prismaClient: PrismaClient = hasCartDelegates(global.prisma) && global.prisma != null
   ? global.prisma
   : createPrismaClient();
 

@@ -17,8 +17,8 @@ const Navbar = () => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const router = useRouter();
-  const isDarkTheme = pathname === '/bestsellers' || pathname === '/gallery' || pathname === '/shop' || pathname === '/about' || pathname === '/checkout' || pathname === '/login';
-  const isFrosted = pathname === '/login';
+  const isDarkTheme = pathname === '/bestsellers' || pathname === '/gallery' || pathname === '/shop' || pathname === '/about' || pathname === '/checkout' || pathname === '/login' || pathname === '/admin' || pathname === '/forgot-password' || pathname === '/reset-password';
+  const isFrosted = pathname === '/login' || pathname === '/admin' || pathname === '/forgot-password' || pathname === '/reset-password';
   
   useEffect(() => {
     const handleScroll = () => {

@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
+import { Suspense } from 'react';
 import AuthPageForm from '@/components/auth/AuthPageForm';
 import { authOptions } from '@/lib/auth';
 import { getSafeCallbackPath } from '@/lib/auth-utils';
@@ -55,7 +56,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         </section>
 
         <div className="flex justify-center lg:justify-end">
-          <AuthPageForm callbackUrl={callbackUrl} oauthError={error} />
+          <Suspense fallback={<div className="w-full max-w-md h-96 rounded-[2rem] bg-white/40 animate-pulse" />}>
+            <AuthPageForm callbackUrl={callbackUrl} oauthError={error} />
+          </Suspense>
         </div>
       </div>
     </main>

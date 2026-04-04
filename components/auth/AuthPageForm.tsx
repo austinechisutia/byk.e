@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { FormEvent, useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   AUTH_NAME_MAX_LENGTH,
   AUTH_PASSWORD_MAX_LENGTH,
@@ -33,6 +33,8 @@ type Mode = 'signin' | 'signup';
 
 export default function AuthPageForm({ callbackUrl, oauthError }: AuthPageFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const wasReset = searchParams.get('reset') === 'success';
   const [mode, setMode] = useState<Mode>('signin');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -131,6 +133,12 @@ export default function AuthPageForm({ callbackUrl, oauthError }: AuthPageFormPr
         Sign in with Google or use your email and password to access your Vigne account.
       </p>
 
+      {wasReset && (
+        <p className="mb-4 rounded-2xl bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
+          Password updated successfully. Sign in with your new password.
+        </p>
+      )}
+
       <button
         type="button"
         onClick={handleGoogle}
@@ -215,6 +223,14 @@ export default function AuthPageForm({ callbackUrl, oauthError }: AuthPageFormPr
             required
           />
         </div>
+
+        {mode === 'signin' && (
+          <div className="text-right -mt-2">
+            <Link href="/forgot-password" className="text-xs text-[#11430F] hover:underline font-medium">
+              Forgot password?
+            </Link>
+          </div>
+        )}
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 

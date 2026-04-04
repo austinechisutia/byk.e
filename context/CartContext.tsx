@@ -18,6 +18,7 @@ interface CartContextType {
   updateQuantity: (productId: number, quantity: number) => Promise<void>;
   toggleCart: () => void;
   setIsCartOpen: (isOpen: boolean) => void;
+  clearCart: () => Promise<void>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -267,6 +268,18 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const clearCart = async () => {
+    setIsCartSyncing(true);
+    try {
+      await persistCart([]);
+      setIsCartOpen(false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsCartSyncing(false);
+    }
+  };
+
   const toggleCart = () => {
     if (status !== 'authenticated' || !session?.user?.id) {
       redirectToLogin();
@@ -299,7 +312,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         removeFromCart, 
         updateQuantity, 
         toggleCart,
-        setIsCartOpen
+        setIsCartOpen,
+        clearCart
       }}
     >
       {children}

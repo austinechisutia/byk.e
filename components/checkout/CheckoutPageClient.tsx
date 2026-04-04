@@ -8,24 +8,60 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CheckoutPageClient = () => {
-  const { cartItems, cartTotal } = useCart();
+  const { cartItems, cartTotal, clearCart } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'mpesa'>('card');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [postalCode, setPostalCode] = useState('');
   const shippingCost = 250;
   const total = cartTotal + shippingCost;
 
-  const handleCheckout = (event: React.FormEvent) => {
+  const handleCheckout = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsProcessing(true);
 
-    const processingTime = paymentMethod === 'mpesa' ? 3500 : 2500;
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          firstName,
+          lastName,
+          address,
+          city,
+          postalCode,
+          paymentMethod,
+          subtotal: cartTotal,
+          shipping: shippingCost,
+          total,
+          items: cartItems.map((item) => ({
+            productId: item.id,
+            name: item.name,
+            price: item.price,
+            image: item.image,
+            category: item.category,
+            quantity: item.quantity,
+          })),
+        }),
+      });
 
-    setTimeout(() => {
-      setIsProcessing(false);
+      if (!response.ok) {
+        setIsProcessing(false);
+        return;
+      }
+
+      clearCart();
       setIsSuccess(true);
-    }, processingTime);
+    } catch {
+      setIsProcessing(false);
+    }
   };
 
   if (isSuccess) {
@@ -74,7 +110,7 @@ const CheckoutPageClient = () => {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-bold text-gray-900 mb-1">Email Address</label>
-                    <input required type="email" placeholder="you@example.com" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] focus:border-transparent outline-none transition-all placeholder:text-gray-500 text-gray-900" />
+                    <input required type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] focus:border-transparent outline-none transition-all placeholder:text-gray-500 text-gray-900" />
                   </div>
                   <div className="flex items-center gap-2">
                     <input type="checkbox" id="newsletter" className="w-4 h-4 text-[#11430F]" />
@@ -91,23 +127,23 @@ const CheckoutPageClient = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-bold text-gray-900 mb-1">First Name</label>
-                    <input required type="text" placeholder="First Name" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
+                    <input required type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-gray-900 mb-1">Last Name</label>
-                    <input required type="text" placeholder="Last Name" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
+                    <input required type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-bold text-gray-900 mb-1">Address</label>
-                    <input required type="text" placeholder="Apartment, suite, etc." className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
+                    <input required type="text" placeholder="Apartment, suite, etc." value={address} onChange={(e) => setAddress(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-gray-900 mb-1">City</label>
-                    <input required type="text" placeholder="City" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
+                    <input required type="text" placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-gray-900 mb-1">Postal Code</label>
-                    <input required type="text" placeholder="Postal Code" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
+                    <input required type="text" placeholder="Postal Code" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
                   </div>
                 </div>
               </section>
