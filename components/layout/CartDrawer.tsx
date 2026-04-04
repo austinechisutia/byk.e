@@ -34,7 +34,7 @@ const CartDrawer = () => {
             <div className="p-6 border-b flex items-center justify-between bg-white sticky top-0 z-10">
               <div className="flex items-center gap-3">
                 <ShoppingBag className="text-[#11430F]" size={24} />
-                <h2 className="text-2xl font-medium font-serif italic">Your Bag ({cartCount})</h2>
+                <h2 className="text-2xl font-medium text-gray-700 font-serif italic">Your Bag ({cartCount})</h2>
               </div>
               <button
                 onClick={() => setIsCartOpen(false)}
@@ -79,22 +79,22 @@ const CartDrawer = () => {
                       <p className="text-sm text-gray-500 mb-2">{item.category}</p>
                       
                       <div className="mt-auto flex justify-between items-center">
-                        <div className="flex items-center border rounded-full px-2 py-1 scale-90 origin-left">
+                        <div className="flex items-center border-2 border-gray-700 rounded-full px-2 py-1 scale-90 origin-left">
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="p-1 hover:text-[#11430F] transition-colors"
+                            className="p-1 text-gray-700 hover:text-[#11430F] transition-colors"
                           >
                             <Minus size={14} />
                           </button>
-                          <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+                          <span className="w-8 text-center text-sm font-bold text-gray-900">{item.quantity}</span>
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="p-1 hover:text-[#11430F] transition-colors"
+                            className="p-1 text-gray-700 hover:text-[#11430F] transition-colors"
                           >
                             <Plus size={14} />
                           </button>
                         </div>
-                        <span className="font-medium text-gray-900">{item.price}</span>
+                        <span className="font-semibold text-gray-900 text-base">{item.price}</span>
                       </div>
                     </div>
                   </div>
