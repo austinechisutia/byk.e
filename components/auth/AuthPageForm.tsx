@@ -128,7 +128,7 @@ export default function AuthPageForm({ callbackUrl, oauthError }: AuthPageFormPr
       </div>
 
       <p className="mb-6 text-sm leading-6 text-gray-600">
-        Sign in with Google or use your email and password. Sessions are handled with signed JWTs.
+        Sign in with Google or use your email and password to access your Vigne account.
       </p>
 
       <button

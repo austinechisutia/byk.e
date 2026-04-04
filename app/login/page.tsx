@@ -32,24 +32,24 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             Vigne Account
           </p>
           <h1 className="font-serif text-5xl leading-tight text-[#11430F] md:text-7xl">
-            A dedicated login page, backed by JWT sessions.
+            Kitchenware crafted for a greener home.
           </h1>
           <p className="mt-6 max-w-lg text-base leading-7 text-gray-700 md:text-lg">
-            Use email and password or continue with Google. Successful sign-in returns users only to safe in-app routes.
+            Sign in to save your favourites, track orders, and shop our full range of eco-friendly kitchenware — made from natural, sustainable materials.
           </p>
 
           <div className="mt-8 grid gap-4 text-sm text-gray-700 sm:grid-cols-3">
             <div className="rounded-3xl border border-white/60 bg-white/55 p-4 backdrop-blur-sm">
-              <p className="font-semibold text-[#11430F]">JWT strategy</p>
-              <p className="mt-2 leading-6">NextAuth signs session tokens and keeps the app stateless.</p>
+              <p className="font-semibold text-[#11430F]">Natural finish</p>
+              <p className="mt-2 leading-6">Every piece is shaped from sustainably sourced materials with a minimal footprint.</p>
             </div>
             <div className="rounded-3xl border border-white/60 bg-white/55 p-4 backdrop-blur-sm">
-              <p className="font-semibold text-[#11430F]">Safer redirects</p>
-              <p className="mt-2 leading-6">Callback URLs are normalized so external redirect targets are ignored.</p>
+              <p className="font-semibold text-[#11430F]">Built to last</p>
+              <p className="mt-2 leading-6">Designed to endure evolving meals and everyday life — not to be replaced each season.</p>
             </div>
             <div className="rounded-3xl border border-white/60 bg-white/55 p-4 backdrop-blur-sm">
-              <p className="font-semibold text-[#11430F]">Bounded input</p>
-              <p className="mt-2 leading-6">Registration validates email and caps password length for bcrypt safety.</p>
+              <p className="font-semibold text-[#11430F]">96% eco-conscious</p>
+              <p className="mt-2 leading-6">Our range is made with materials that are kind to your kitchen and the planet.</p>
             </div>
           </div>
         </section>

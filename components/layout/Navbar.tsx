@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -11,11 +11,14 @@ import CartDrawer from './CartDrawer';
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const { cartCount, setIsCartOpen } = useCart();
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const router = useRouter();
-  const isDarkTheme = pathname === '/bestsellers' || pathname === '/gallery' || pathname === '/shop' || pathname === '/about' || pathname === '/checkout';
+  const isDarkTheme = pathname === '/bestsellers' || pathname === '/gallery' || pathname === '/shop' || pathname === '/about' || pathname === '/checkout' || pathname === '/login';
+  const isFrosted = pathname === '/login';
   
   useEffect(() => {
     const handleScroll = () => {
@@ -25,14 +28,24 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   // Dynamic classes based on route and scroll state
   const textColor = isDarkTheme || isScrolled ? 'text-gray-900' : 'text-white';
   const hoverColor = isDarkTheme || isScrolled ? 'hover:text-gray-600' : 'hover:text-gray-200';
   const iconBg = isDarkTheme || isScrolled ? 'bg-gray-200/50 hover:bg-gray-300/50' : 'bg-white/20 hover:bg-white/30';
   const searchBg = isDarkTheme || isScrolled ? 'bg-gray-100 placeholder-gray-500' : 'bg-white/80 placeholder-gray-800';
   
-  const navBg = isScrolled 
-    ? 'bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100' 
+  const navBg = isScrolled || isFrosted
+    ? 'bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100'
     : 'bg-transparent';
   
   const navPadding = isScrolled ? 'py-4 md:py-5' : 'py-6 md:py-8';
@@ -46,7 +59,7 @@ const Navbar = () => {
 
   const handleUserClick = () => {
     if (session?.user) {
-      void signOut({ callbackUrl: '/' });
+      setIsUserMenuOpen((prev) => !prev);
       return;
     }
 
@@ -120,19 +133,43 @@ const Navbar = () => {
                    </span>
                  )}
             </button>
-            <button
-              onClick={handleUserClick}
-              className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition ${iconBg} relative`}
-              title={session?.user ? `${session.user.email || session.user.name || 'User'} - Click to sign out` : 'Sign in or create account'}
-            >
-              {session?.user ? (
-                <div className={`w-full h-full rounded-full flex items-center justify-center font-bold text-sm ${textColor} bg-[#11430F]/30`}>
-                  {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
+            <div ref={userMenuRef} className="relative">
+              <button
+                onClick={handleUserClick}
+                className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition ${iconBg}`}
+                title={session?.user ? `${session.user.email || session.user.name || 'User'}` : 'Sign in or create account'}
+              >
+                {session?.user ? (
+                  <div className={`w-full h-full rounded-full flex items-center justify-center font-bold text-sm ${textColor} bg-[#11430F]/30`}>
+                    {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
+                  </div>
+                ) : (
+                  <User className={`w-4 h-4 md:w-5 md:h-5 ${textColor}`} />
+                )}
+              </button>
+
+              {isUserMenuOpen && session?.user && (
+                <div className="absolute right-0 mt-2 w-52 rounded-2xl border border-white/60 bg-white/95 shadow-xl backdrop-blur-xl py-2 z-50">
+                  <div className="px-4 py-2 border-b border-gray-100">
+                    {session.user.name && (
+                      <p className="text-sm font-semibold text-gray-900 truncate">{session.user.name}</p>
+                    )}
+                    {session.user.email && (
+                      <p className="text-xs text-gray-500 truncate">{session.user.email}</p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => {
+                      setIsUserMenuOpen(false);
+                      void signOut({ callbackUrl: '/' });
+                    }}
+                    className="w-full text-left px-4 py-2 mt-1 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors rounded-b-2xl"
+                  >
+                    Sign out
+                  </button>
                 </div>
-              ) : (
-                <User className={`w-4 h-4 md:w-5 md:h-5 ${textColor}`} />
               )}
-            </button>
+            </div>
             {session?.user?.name && (
               <span className={`hidden xl:inline text-sm font-medium ${textColor}`}>
                 {session.user.name}
