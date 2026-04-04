@@ -3,19 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import { useCart } from '@/context/CartContext';
 import CartDrawer from './CartDrawer';
-import AuthModal from '@/components/auth/AuthModal';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { cartCount, setIsCartOpen } = useCart();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const pathname = usePathname();
+  const router = useRouter();
   const isDarkTheme = pathname === '/bestsellers' || pathname === '/gallery' || pathname === '/shop' || pathname === '/about' || pathname === '/checkout';
   
   useEffect(() => {
@@ -51,7 +50,20 @@ const Navbar = () => {
       return;
     }
 
-    setIsAuthModalOpen(true);
+    router.push(`/login?callbackUrl=${encodeURIComponent(pathname || '/')}`);
+  };
+
+  const handleCartClick = () => {
+    if (status === 'loading') {
+      return;
+    }
+
+    if (!session?.user) {
+      router.push(`/login?callbackUrl=${encodeURIComponent(pathname || '/')}`);
+      return;
+    }
+
+    setIsCartOpen(true);
   };
 
   return (
@@ -97,8 +109,9 @@ const Navbar = () => {
                  <input type="text" placeholder="Search Product" className={`pl-9 pr-4 py-2 text-sm text-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-[#e4f386] w-36 lg:w-56 font-medium ${searchBg}`} />
             </div>
             <button 
-              onClick={() => setIsCartOpen(true)}
+              onClick={handleCartClick}
               className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition relative ${iconBg}`}
+              title={session?.user ? 'Open cart' : 'Create an account to use the cart'}
             >
                  <ShoppingBag className={`w-4 h-4 md:w-5 md:h-5 ${textColor}`} />
                  {cartCount > 0 && (
@@ -130,7 +143,6 @@ const Navbar = () => {
       </nav>
 
       <CartDrawer />
-      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
 
       {/* Mobile Navigation Mesh Overlay */}
       {isMenuOpen && (
