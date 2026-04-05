@@ -13,7 +13,7 @@ const CheckoutPageClient = () => {
   const { data: session } = useSession();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'mpesa'>('card');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'mpesa' | 'paypal'>('card');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -177,9 +177,12 @@ const CheckoutPageClient = () => {
                       </div>
                       <span className="font-medium">Credit Card</span>
                     </div>
-                    <div className="flex gap-2">
-                      <div className="w-8 h-5 bg-gray-200 rounded"></div>
-                      <div className="w-8 h-5 bg-gray-200 rounded"></div>
+                    <div className="flex gap-2 items-center">
+                      <div className="flex items-center justify-center bg-[#1A1F71] px-2 py-0.5 rounded text-white text-[11px] font-black italic tracking-tight">VISA</div>
+                      <div className="relative flex items-center w-9 h-5">
+                        <div className="absolute left-0 w-5 h-5 bg-[#EB001B] rounded-full opacity-90"></div>
+                        <div className="absolute left-3 w-5 h-5 bg-[#F79E1B] rounded-full opacity-90"></div>
+                      </div>
                     </div>
                   </div>
 
@@ -193,10 +196,25 @@ const CheckoutPageClient = () => {
                       </div>
                       <span className="font-medium">M-Pesa</span>
                     </div>
-                    <div className="flex gap-2">
-                      <div className="flex items-center bg-[#49B54A] px-2 py-0.5 rounded text-white text-[10px] font-black tracking-tighter">
-                        M-PESA
+                    <div className="flex items-center gap-1.5 bg-[#49B54A] px-2.5 py-1 rounded-lg">
+                      <svg viewBox="0 0 24 24" className="w-3 h-3 fill-white shrink-0" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+                      <span className="text-white text-[10px] font-black tracking-tight">M-PESA</span>
+                    </div>
+                  </div>
+
+                  <div
+                    onClick={() => setPaymentMethod('paypal')}
+                    className={`p-4 border-2 rounded-xl flex justify-between items-center cursor-pointer transition-all ${paymentMethod === 'paypal' ? 'border-[#11430F] bg-[#f8f9f5]' : 'border-gray-100 hover:border-gray-200'}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-4 h-4 rounded-full flex items-center justify-center border ${paymentMethod === 'paypal' ? 'bg-[#11430F] border-[#11430F]' : 'border-gray-300'}`}>
+                        {paymentMethod === 'paypal' && <div className="w-2 h-2 bg-white rounded-full"></div>}
                       </div>
+                      <span className="font-medium">PayPal</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-[#003087] px-2.5 py-1 rounded-lg">
+                      <svg viewBox="0 0 24 24" className="w-3 h-3 fill-[#009CDE] shrink-0" xmlns="http://www.w3.org/2000/svg"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z"/></svg>
+                      <span className="text-[#009CDE] text-[10px] font-black tracking-tight">PayPal</span>
                     </div>
                   </div>
 
@@ -219,7 +237,7 @@ const CheckoutPageClient = () => {
                           <input required={paymentMethod === 'card'} type="text" placeholder="CVC" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
                         </div>
                       </motion.div>
-                    ) : (
+                    ) : paymentMethod === 'mpesa' ? (
                       <motion.div
                         key="mpesa-fields"
                         initial={{ opacity: 0, height: 0 }}
@@ -240,6 +258,25 @@ const CheckoutPageClient = () => {
                           <p className="text-xs text-gray-500 mt-2">You will receive an STK push on your phone to complete the transaction.</p>
                         </div>
                       </motion.div>
+                    ) : (
+                      <motion.div
+                        key="paypal-fields"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="space-y-4 pt-2 overflow-hidden"
+                      >
+                        <div>
+                          <label className="block text-sm font-bold text-gray-900 mb-1">PayPal Email</label>
+                          <input
+                            required={paymentMethod === 'paypal'}
+                            type="email"
+                            placeholder="your-paypal@email.com"
+                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900"
+                          />
+                          <p className="text-xs text-gray-500 mt-2">You will be redirected to PayPal to complete your payment securely.</p>
+                        </div>
+                      </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
@@ -252,7 +289,7 @@ const CheckoutPageClient = () => {
                 {isProcessing ? (
                   <>
                     <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    {paymentMethod === 'mpesa' ? 'Checking Phone...' : 'Processing Payment...'}
+                    {paymentMethod === 'mpesa' ? 'Checking Phone...' : paymentMethod === 'paypal' ? 'Redirecting to PayPal...' : 'Processing Payment...'}
                   </>
                 ) : (
                   `Pay Kes ${total.toLocaleString()}`
