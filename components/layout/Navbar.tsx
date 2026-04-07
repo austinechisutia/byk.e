@@ -12,6 +12,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [hasOrders, setHasOrders] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const { cartCount, setIsCartOpen } = useCart();
   const { data: session, status } = useSession();
@@ -37,6 +38,14 @@ const Navbar = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (status !== 'authenticated') return;
+    fetch('/api/orders')
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data: unknown[]) => setHasOrders(Array.isArray(data) && data.length > 0))
+      .catch(() => {});
+  }, [status]);
 
   // Dynamic classes based on route and scroll state
   const textColor = isDarkTheme || isScrolled ? 'text-gray-900' : 'text-white';
@@ -147,6 +156,9 @@ const Navbar = () => {
                   <User className={`w-4 h-4 md:w-5 md:h-5 ${textColor}`} />
                 )}
               </button>
+              {hasOrders && (
+                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-green-400 border border-white animate-pulse" />
+              )}
 
               {isUserMenuOpen && session?.user && (
                 <div className="absolute right-0 mt-2 w-52 rounded-2xl border border-white/60 bg-white/95 shadow-xl backdrop-blur-xl py-2 z-50">
@@ -158,12 +170,19 @@ const Navbar = () => {
                       <p className="text-xs text-gray-500 truncate">{session.user.email}</p>
                     )}
                   </div>
+                  <Link
+                    href="/orders"
+                    onClick={() => setIsUserMenuOpen(false)}
+                    className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    My Orders
+                  </Link>
                   <button
                     onClick={() => {
                       setIsUserMenuOpen(false);
                       void signOut({ callbackUrl: '/' });
                     }}
-                    className="w-full text-left px-4 py-2 mt-1 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors rounded-b-2xl"
+                    className="w-full text-left px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors rounded-b-2xl"
                   >
                     Sign out
                   </button>

@@ -7,17 +7,372 @@ import { CheckCircle2, ChevronLeft, CreditCard, Truck, ShieldCheck } from 'lucid
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
+type PaymentMethodType = 'card' | 'mpesa' | 'paypal';
+
+interface CheckoutInnerProps {
+  paymentMethod: PaymentMethodType;
+  setPaymentMethod: (m: PaymentMethodType) => void;
+  email: string; setEmail: (v: string) => void;
+  firstName: string; setFirstName: (v: string) => void;
+  lastName: string; setLastName: (v: string) => void;
+  address: string; setAddress: (v: string) => void;
+  city: string; setCity: (v: string) => void;
+  postalCode: string; setPostalCode: (v: string) => void;
+  phoneNumber: string; setPhoneNumber: (v: string) => void;
+  paypalEmail: string; setPaypalEmail: (v: string) => void;
+  cartItems: ReturnType<typeof useCart>['cartItems'];
+  cartTotal: number;
+  shippingCost: number;
+  total: number;
+  onSuccess: () => void;
+  clearCart: () => void;
+}
+
+function CheckoutInner({
+  paymentMethod, setPaymentMethod,
+  email, setEmail,
+  firstName, setFirstName,
+  lastName, setLastName,
+  address, setAddress,
+  city, setCity,
+  postalCode, setPostalCode,
+  phoneNumber, setPhoneNumber,
+  paypalEmail, setPaypalEmail,
+  cartItems, cartTotal, shippingCost, total,
+  onSuccess, clearCart,
+}: CheckoutInnerProps) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+
+  // Handle returning from a 3D Secure redirect
+  useEffect(() => {
+    if (!stripe) return;
+    const clientSecret = new URLSearchParams(window.location.search).get('payment_intent_client_secret');
+    if (!clientSecret) return;
+    stripe.retrievePaymentIntent(clientSecret).then(async ({ paymentIntent }) => {
+      if (paymentIntent?.status === 'succeeded') {
+        clearCart();
+        onSuccess();
+      }
+    });
+  }, [stripe, clearCart, onSuccess]);
+
+  const createOrderRecord = async (extra: Record<string, unknown> = {}) => {
+    const res = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email, firstName, lastName, address, city, postalCode,
+        paymentMethod,
+        subtotal: cartTotal,
+        shipping: shippingCost,
+        total,
+        items: cartItems.map((item) => ({
+          productId: item.id,
+          name: item.name,
+          price: item.price,
+          image: item.image,
+          category: item.category,
+          quantity: item.quantity,
+        })),
+        ...extra,
+      }),
+    });
+    return res.ok;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPaymentError(null);
+    setIsProcessing(true);
+
+    try {
+      if (paymentMethod === 'card') {
+        if (!stripe || !elements) {
+          setPaymentError('Payment is not ready yet. Please wait a moment and try again.');
+          return;
+        }
+
+        const cardElement = elements.getElement(CardElement);
+        if (!cardElement) {
+          setPaymentError('Card field not found. Please refresh the page and try again.');
+          return;
+        }
+
+        // 1. Create PaymentIntent server-side
+        const piRes = await fetch('/api/checkout/payment-intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: total }),
+        });
+        if (!piRes.ok) {
+          setPaymentError('Could not initialize payment. Please try again.');
+          return;
+        }
+        const { clientSecret } = await piRes.json() as { clientSecret: string };
+
+        // 2. Confirm card payment (handles 3DS automatically)
+        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name: `${firstName} ${lastName}`.trim() || undefined,
+              email,
+            },
+          },
+        });
+
+        if (error) {
+          setPaymentError(error.message ?? 'Payment failed. Please try again.');
+          return;
+        }
+
+        // 3. Save order record after successful payment
+        const saved = await createOrderRecord({ stripePaymentIntentId: paymentIntent?.id });
+        if (!saved) {
+          setPaymentError('Payment succeeded but order could not be saved. Please contact support with your payment ID.');
+          return;
+        }
+      } else {
+        // M-Pesa / PayPal — create order record directly
+        const saved = await createOrderRecord();
+        if (!saved) {
+          setPaymentError('Order could not be placed. Please try again.');
+          return;
+        }
+      }
+
+      clearCart();
+      onSuccess();
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+        <h2 className="text-2xl font-serif italic mb-6 flex items-center gap-3 text-gray-900">
+          <ShieldCheck className="text-[#11430F]" />
+          Contact Information
+        </h2>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-1">Email Address</label>
+            <input required type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] focus:border-transparent outline-none transition-all placeholder:text-gray-500 text-gray-900" />
+          </div>
+          <div className="flex items-center gap-2">
+            <input type="checkbox" id="newsletter" className="w-4 h-4 text-[#11430F]" />
+            <label htmlFor="newsletter" className="text-sm text-gray-800 font-medium">Email me with news and eco-tips</label>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+        <h2 className="text-2xl font-serif italic mb-6 flex items-center gap-3 text-gray-900">
+          <Truck className="text-[#11430F]" />
+          Shipping Address
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-1">First Name</label>
+            <input required type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-1">Last Name</label>
+            <input required type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-bold text-gray-900 mb-1">Address</label>
+            <input required type="text" placeholder="Apartment, suite, etc." value={address} onChange={(e) => setAddress(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-1">City</label>
+            <input required type="text" placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-1">Postal Code</label>
+            <input required type="text" placeholder="Postal Code" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+        <h2 className="text-2xl font-serif italic mb-6 flex items-center gap-3 text-gray-900">
+          <CreditCard className="text-[#11430F]" />
+          Payment Method
+        </h2>
+        <div className="space-y-4">
+          <div
+            onClick={() => setPaymentMethod('card')}
+            className={`p-4 border-2 rounded-xl flex justify-between items-center cursor-pointer transition-all ${paymentMethod === 'card' ? 'border-[#11430F] bg-[#f8f9f5]' : 'border-gray-100 hover:border-gray-200'}`}
+          >
+            <div className="flex items-center gap-3">
+              <div className={`w-4 h-4 rounded-full flex items-center justify-center border ${paymentMethod === 'card' ? 'bg-[#11430F] border-[#11430F]' : 'border-gray-300'}`}>
+                {paymentMethod === 'card' && <div className="w-2 h-2 bg-white rounded-full" />}
+              </div>
+              <span className="font-medium">Credit Card</span>
+            </div>
+            <div className="flex gap-2 items-center">
+              <div className="flex items-center justify-center bg-[#1A1F71] px-2 py-0.5 rounded text-white text-[11px] font-black italic tracking-tight">VISA</div>
+              <div className="relative flex items-center w-9 h-5">
+                <div className="absolute left-0 w-5 h-5 bg-[#EB001B] rounded-full opacity-90" />
+                <div className="absolute left-3 w-5 h-5 bg-[#F79E1B] rounded-full opacity-90" />
+              </div>
+            </div>
+          </div>
+
+          <div
+            onClick={() => setPaymentMethod('mpesa')}
+            className={`p-4 border-2 rounded-xl flex justify-between items-center cursor-pointer transition-all ${paymentMethod === 'mpesa' ? 'border-[#11430F] bg-[#f8f9f5]' : 'border-gray-100 hover:border-gray-200'}`}
+          >
+            <div className="flex items-center gap-3">
+              <div className={`w-4 h-4 rounded-full flex items-center justify-center border ${paymentMethod === 'mpesa' ? 'bg-[#11430F] border-[#11430F]' : 'border-gray-300'}`}>
+                {paymentMethod === 'mpesa' && <div className="w-2 h-2 bg-white rounded-full" />}
+              </div>
+              <span className="font-medium">M-Pesa</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-[#49B54A] px-2.5 py-1 rounded-lg">
+              <svg viewBox="0 0 24 24" className="w-3 h-3 fill-white shrink-0" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+              <span className="text-white text-[10px] font-black tracking-tight">M-PESA</span>
+            </div>
+          </div>
+
+          <div
+            onClick={() => setPaymentMethod('paypal')}
+            className={`p-4 border-2 rounded-xl flex justify-between items-center cursor-pointer transition-all ${paymentMethod === 'paypal' ? 'border-[#11430F] bg-[#f8f9f5]' : 'border-gray-100 hover:border-gray-200'}`}
+          >
+            <div className="flex items-center gap-3">
+              <div className={`w-4 h-4 rounded-full flex items-center justify-center border ${paymentMethod === 'paypal' ? 'bg-[#11430F] border-[#11430F]' : 'border-gray-300'}`}>
+                {paymentMethod === 'paypal' && <div className="w-2 h-2 bg-white rounded-full" />}
+              </div>
+              <span className="font-medium">PayPal</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-[#003087] px-2.5 py-1 rounded-lg">
+              <svg viewBox="0 0 24 24" className="w-3 h-3 fill-[#009CDE] shrink-0" xmlns="http://www.w3.org/2000/svg"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z"/></svg>
+              <span className="text-[#009CDE] text-[10px] font-black tracking-tight">PayPal</span>
+            </div>
+          </div>
+
+          <AnimatePresence mode="wait">
+            {paymentMethod === 'card' ? (
+              <motion.div
+                key="card-fields"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="pt-4 overflow-hidden"
+              >
+                <div className="px-4 py-3 rounded-xl border border-gray-300 focus-within:ring-2 focus-within:ring-[#11430F] focus-within:border-transparent transition-all">
+                  <CardElement
+                    options={{
+                      style: {
+                        base: {
+                          fontSize: '16px',
+                          color: '#111827',
+                          fontFamily: 'inherit',
+                          '::placeholder': { color: '#6b7280' },
+                        },
+                        invalid: { color: '#ef4444' },
+                      },
+                      hidePostalCode: true,
+                    }}
+                  />
+                </div>
+              </motion.div>
+            ) : paymentMethod === 'mpesa' ? (
+              <motion.div
+                key="mpesa-fields"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="space-y-4 pt-2 overflow-hidden"
+              >
+                <div>
+                  <label className="block text-sm font-bold text-gray-900 mb-1">M-Pesa Phone Number</label>
+                  <input
+                    required={paymentMethod === 'mpesa'}
+                    type="tel"
+                    placeholder="07XX XXX XXX or 01XX XXX XXX"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900"
+                  />
+                  <p className="text-xs text-gray-500 mt-2">You will receive an STK push on your phone to complete the transaction.</p>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="paypal-fields"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="space-y-4 pt-2 overflow-hidden"
+              >
+                <div>
+                  <label className="block text-sm font-bold text-gray-900 mb-1">PayPal Email</label>
+                  <input
+                    required={paymentMethod === 'paypal'}
+                    type="email"
+                    placeholder="your-paypal@email.com"
+                    value={paypalEmail}
+                    onChange={(e) => setPaypalEmail(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900"
+                  />
+                  <p className="text-xs text-gray-500 mt-2">You will be redirected to PayPal to complete your payment securely.</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </section>
+
+      {paymentError && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm font-medium">
+          {paymentError}
+        </div>
+      )}
+
+      <button
+        type="submit"
+        disabled={isProcessing || cartItems.length === 0}
+        className={`w-full py-5 rounded-full font-bold text-xl transition-all flex items-center justify-center gap-3 shadow-lg ${isProcessing || cartItems.length === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-[#11430F] text-white hover:bg-black'}`}
+      >
+        {isProcessing ? (
+          <>
+            <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+            {paymentMethod === 'mpesa' ? 'Checking Phone...' : paymentMethod === 'paypal' ? 'Redirecting to PayPal...' : 'Processing Payment...'}
+          </>
+        ) : (
+          `Pay Kes ${total.toLocaleString()}`
+        )}
+      </button>
+    </form>
+  );
+}
 
 const CheckoutPageClient = () => {
   const { cartItems, cartTotal, clearCart } = useCart();
   const { data: session } = useSession();
-  const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'mpesa' | 'paypal'>('card');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>('card');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [paypalEmail, setPaypalEmail] = useState('');
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [postalCode, setPostalCode] = useState('');
+  const shippingCost = 250;
+  const total = cartTotal + shippingCost;
 
   useEffect(() => {
     if (session?.user) {
@@ -29,53 +384,6 @@ const CheckoutPageClient = () => {
       }
     }
   }, [session]);
-  const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [postalCode, setPostalCode] = useState('');
-  const shippingCost = 250;
-  const total = cartTotal + shippingCost;
-
-  const handleCheckout = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setIsProcessing(true);
-
-    try {
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          firstName,
-          lastName,
-          address,
-          city,
-          postalCode,
-          paymentMethod,
-          subtotal: cartTotal,
-          shipping: shippingCost,
-          total,
-          items: cartItems.map((item) => ({
-            productId: item.id,
-            name: item.name,
-            price: item.price,
-            image: item.image,
-            category: item.category,
-            quantity: item.quantity,
-          })),
-        }),
-      });
-
-      if (!response.ok) {
-        setIsProcessing(false);
-        return;
-      }
-
-      clearCart();
-      setIsSuccess(true);
-    } catch {
-      setIsProcessing(false);
-    }
-  };
 
   if (isSuccess) {
     return (
@@ -94,8 +402,11 @@ const CheckoutPageClient = () => {
           <p className="text-gray-600">
             Thank you for your purchase. We&apos;ve sent a confirmation email to your inbox and we&apos;ll notify you when your eco-friendly goods are on their way.
           </p>
-          <div className="pt-4">
-            <Link href="/shop" className="inline-block bg-[#11430F] text-white px-8 py-3 rounded-full font-medium hover:bg-black transition-colors">
+          <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/orders" className="inline-block bg-[#11430F] text-white px-8 py-3 rounded-full font-medium hover:bg-black transition-colors">
+              View My Orders
+            </Link>
+            <Link href="/shop" className="inline-block bg-gray-100 text-gray-800 px-8 py-3 rounded-full font-medium hover:bg-gray-200 transition-colors">
               Continue Shopping
             </Link>
           </div>
@@ -114,188 +425,26 @@ const CheckoutPageClient = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="lg:col-span-7 space-y-8">
-            <form onSubmit={handleCheckout} className="space-y-8">
-              <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                <h2 className="text-2xl font-serif italic mb-6 flex items-center gap-3 text-gray-900">
-                  <ShieldCheck className="text-[#11430F]" />
-                  Contact Information
-                </h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-900 mb-1">Email Address</label>
-                    <input required type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] focus:border-transparent outline-none transition-all placeholder:text-gray-500 text-gray-900" />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input type="checkbox" id="newsletter" className="w-4 h-4 text-[#11430F]" />
-                    <label htmlFor="newsletter" className="text-sm text-gray-800 font-medium">Email me with news and eco-tips</label>
-                  </div>
-                </div>
-              </section>
-
-              <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                <h2 className="text-2xl font-serif italic mb-6 flex items-center gap-3 text-gray-900">
-                  <Truck className="text-[#11430F]" />
-                  Shipping Address
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-900 mb-1">First Name</label>
-                    <input required type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-900 mb-1">Last Name</label>
-                    <input required type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-bold text-gray-900 mb-1">Address</label>
-                    <input required type="text" placeholder="Apartment, suite, etc." value={address} onChange={(e) => setAddress(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-900 mb-1">City</label>
-                    <input required type="text" placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-900 mb-1">Postal Code</label>
-                    <input required type="text" placeholder="Postal Code" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
-                  </div>
-                </div>
-              </section>
-
-              <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                <h2 className="text-2xl font-serif italic mb-6 flex items-center gap-3 text-gray-900">
-                  <CreditCard className="text-[#11430F]" />
-                  Payment Method
-                </h2>
-                <div className="space-y-4">
-                  <div
-                    onClick={() => setPaymentMethod('card')}
-                    className={`p-4 border-2 rounded-xl flex justify-between items-center cursor-pointer transition-all ${paymentMethod === 'card' ? 'border-[#11430F] bg-[#f8f9f5]' : 'border-gray-100 hover:border-gray-200'}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-4 h-4 rounded-full flex items-center justify-center border ${paymentMethod === 'card' ? 'bg-[#11430F] border-[#11430F]' : 'border-gray-300'}`}>
-                        {paymentMethod === 'card' && <div className="w-2 h-2 bg-white rounded-full"></div>}
-                      </div>
-                      <span className="font-medium">Credit Card</span>
-                    </div>
-                    <div className="flex gap-2 items-center">
-                      <div className="flex items-center justify-center bg-[#1A1F71] px-2 py-0.5 rounded text-white text-[11px] font-black italic tracking-tight">VISA</div>
-                      <div className="relative flex items-center w-9 h-5">
-                        <div className="absolute left-0 w-5 h-5 bg-[#EB001B] rounded-full opacity-90"></div>
-                        <div className="absolute left-3 w-5 h-5 bg-[#F79E1B] rounded-full opacity-90"></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    onClick={() => setPaymentMethod('mpesa')}
-                    className={`p-4 border-2 rounded-xl flex justify-between items-center cursor-pointer transition-all ${paymentMethod === 'mpesa' ? 'border-[#11430F] bg-[#f8f9f5]' : 'border-gray-100 hover:border-gray-200'}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-4 h-4 rounded-full flex items-center justify-center border ${paymentMethod === 'mpesa' ? 'bg-[#11430F] border-[#11430F]' : 'border-gray-300'}`}>
-                        {paymentMethod === 'mpesa' && <div className="w-2 h-2 bg-white rounded-full"></div>}
-                      </div>
-                      <span className="font-medium">M-Pesa</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 bg-[#49B54A] px-2.5 py-1 rounded-lg">
-                      <svg viewBox="0 0 24 24" className="w-3 h-3 fill-white shrink-0" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-                      <span className="text-white text-[10px] font-black tracking-tight">M-PESA</span>
-                    </div>
-                  </div>
-
-                  <div
-                    onClick={() => setPaymentMethod('paypal')}
-                    className={`p-4 border-2 rounded-xl flex justify-between items-center cursor-pointer transition-all ${paymentMethod === 'paypal' ? 'border-[#11430F] bg-[#f8f9f5]' : 'border-gray-100 hover:border-gray-200'}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-4 h-4 rounded-full flex items-center justify-center border ${paymentMethod === 'paypal' ? 'bg-[#11430F] border-[#11430F]' : 'border-gray-300'}`}>
-                        {paymentMethod === 'paypal' && <div className="w-2 h-2 bg-white rounded-full"></div>}
-                      </div>
-                      <span className="font-medium">PayPal</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 bg-[#003087] px-2.5 py-1 rounded-lg">
-                      <svg viewBox="0 0 24 24" className="w-3 h-3 fill-[#009CDE] shrink-0" xmlns="http://www.w3.org/2000/svg"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z"/></svg>
-                      <span className="text-[#009CDE] text-[10px] font-black tracking-tight">PayPal</span>
-                    </div>
-                  </div>
-
-                  <AnimatePresence mode="wait">
-                    {paymentMethod === 'card' ? (
-                      <motion.div
-                        key="card-fields"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 overflow-hidden"
-                      >
-                        <div className="md:col-span-2">
-                          <input required={paymentMethod === 'card'} type="text" placeholder="Card Number" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
-                        </div>
-                        <div>
-                          <input required={paymentMethod === 'card'} type="text" placeholder="Expiry (MM/YY)" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
-                        </div>
-                        <div>
-                          <input required={paymentMethod === 'card'} type="text" placeholder="CVC" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900" />
-                        </div>
-                      </motion.div>
-                    ) : paymentMethod === 'mpesa' ? (
-                      <motion.div
-                        key="mpesa-fields"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="space-y-4 pt-2 overflow-hidden"
-                      >
-                        <div>
-                          <label className="block text-sm font-bold text-gray-900 mb-1">M-Pesa Phone Number</label>
-                          <input
-                            required={paymentMethod === 'mpesa'}
-                            type="tel"
-                            placeholder="07XX XXX XXX or 01XX XXX XXX"
-                            value={phoneNumber}
-                            onChange={(event) => setPhoneNumber(event.target.value)}
-                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900"
-                          />
-                          <p className="text-xs text-gray-500 mt-2">You will receive an STK push on your phone to complete the transaction.</p>
-                        </div>
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="paypal-fields"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="space-y-4 pt-2 overflow-hidden"
-                      >
-                        <div>
-                          <label className="block text-sm font-bold text-gray-900 mb-1">PayPal Email</label>
-                          <input
-                            required={paymentMethod === 'paypal'}
-                            type="email"
-                            placeholder="your-paypal@email.com"
-                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900"
-                          />
-                          <p className="text-xs text-gray-500 mt-2">You will be redirected to PayPal to complete your payment securely.</p>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </section>
-
-              <button
-                disabled={isProcessing || cartItems.length === 0}
-                className={`w-full py-5 rounded-full font-bold text-xl transition-all flex items-center justify-center gap-3 shadow-lg ${isProcessing || cartItems.length === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-[#11430F] text-white hover:bg-black'}`}
-              >
-                {isProcessing ? (
-                  <>
-                    <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    {paymentMethod === 'mpesa' ? 'Checking Phone...' : paymentMethod === 'paypal' ? 'Redirecting to PayPal...' : 'Processing Payment...'}
-                  </>
-                ) : (
-                  `Pay Kes ${total.toLocaleString()}`
-                )}
-              </button>
-            </form>
+            <Elements stripe={stripePromise}>
+              <CheckoutInner
+                paymentMethod={paymentMethod}
+                setPaymentMethod={setPaymentMethod}
+                email={email} setEmail={setEmail}
+                firstName={firstName} setFirstName={setFirstName}
+                lastName={lastName} setLastName={setLastName}
+                address={address} setAddress={setAddress}
+                city={city} setCity={setCity}
+                postalCode={postalCode} setPostalCode={setPostalCode}
+                phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
+                paypalEmail={paypalEmail} setPaypalEmail={setPaypalEmail}
+                cartItems={cartItems}
+                cartTotal={cartTotal}
+                shippingCost={shippingCost}
+                total={total}
+                onSuccess={() => setIsSuccess(true)}
+                clearCart={clearCart}
+              />
+            </Elements>
           </div>
 
           <div className="lg:col-span-5">
