@@ -105,12 +105,13 @@ model Order {
   address       String
   city          String
   postalCode    String
-  paymentMethod String
-  subtotal      Float
-  shipping      Float
-  total         Float
-  status        String      @default("pending")
-  items         OrderItem[]
+  paymentMethod          String
+  subtotal               Float
+  shipping               Float
+  total                  Float
+  status                 String      @default("pending")
+  mpesaCheckoutRequestId String?
+  items                  OrderItem[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }

@@ -50,6 +50,8 @@ function CheckoutInner({
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [mpesaPending, setMpesaPending] = useState(false);
+  const [mpesaCheckoutId, setMpesaCheckoutId] = useState<string | null>(null);
 
   // Handle returning from a 3D Secure redirect
   useEffect(() => {
@@ -63,6 +65,43 @@ function CheckoutInner({
       }
     });
   }, [stripe, clearCart, onSuccess]);
+
+  // Poll for M-Pesa payment confirmation
+  useEffect(() => {
+    if (!mpesaPending || !mpesaCheckoutId) return;
+    let cancelled = false;
+
+    const poll = async () => {
+      try {
+        const res = await fetch(`/api/mpesa/status/${mpesaCheckoutId}`);
+        if (!res.ok || cancelled) return;
+        const data = (await res.json()) as { status: string };
+        if (data.status === 'paid') {
+          clearCart();
+          onSuccess();
+        } else if (data.status === 'failed') {
+          setMpesaPending(false);
+          setMpesaCheckoutId(null);
+          setPaymentError('M-Pesa payment was cancelled or failed. Please try again.');
+        }
+      } catch { /* network glitch — keep polling */ }
+    };
+
+    const interval = setInterval(poll, 3000);
+    const timeout = setTimeout(() => {
+      if (cancelled) return;
+      clearInterval(interval);
+      setMpesaPending(false);
+      setMpesaCheckoutId(null);
+      setPaymentError('Payment timed out. If you completed the payment, please contact support.');
+    }, 120_000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [mpesaPending, mpesaCheckoutId, clearCart, onSuccess]);
 
   const createOrderRecord = async (extra: Record<string, unknown> = {}) => {
     const res = await fetch('/api/orders', {
@@ -140,8 +179,36 @@ function CheckoutInner({
           setPaymentError('Payment succeeded but order could not be saved. Please contact support with your payment ID.');
           return;
         }
+      } else if (paymentMethod === 'mpesa') {
+        const res = await fetch('/api/mpesa/stk-push', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: phoneNumber,
+            email, firstName, lastName, address, city, postalCode,
+            subtotal: cartTotal,
+            shipping: shippingCost,
+            total,
+            items: cartItems.map((item) => ({
+              productId: item.id,
+              name: item.name,
+              price: item.price,
+              image: item.image,
+              category: item.category,
+              quantity: item.quantity,
+            })),
+          }),
+        });
+        const data = (await res.json()) as Record<string, unknown>;
+        if (!res.ok) {
+          setPaymentError(typeof data.error === 'string' ? data.error : 'Could not initiate M-Pesa payment. Please try again.');
+          return;
+        }
+        setMpesaCheckoutId(data.checkoutRequestId as string);
+        setMpesaPending(true);
+        return; // polling effect handles completion
       } else {
-        // M-Pesa / PayPal — create order record directly
+        // PayPal — create order record directly
         const saved = await createOrderRecord();
         if (!saved) {
           setPaymentError('Order could not be placed. Please try again.');
@@ -155,6 +222,37 @@ function CheckoutInner({
       setIsProcessing(false);
     }
   };
+
+  if (mpesaPending) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 space-y-6 text-center">
+        <div className="relative flex items-center justify-center w-24 h-24">
+          <div className="absolute inset-0 rounded-full bg-[#49B54A]/20 animate-ping" />
+          <div className="relative w-20 h-20 rounded-full bg-[#49B54A]/10 flex items-center justify-center">
+            <svg viewBox="0 0 24 24" className="w-10 h-10 fill-[#49B54A]" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 1.01 7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
+            </svg>
+          </div>
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-serif italic text-gray-900">Check Your Phone</h2>
+          <p className="text-gray-600 max-w-sm">
+            An M-Pesa payment request of <span className="font-bold text-gray-900">KES {total.toLocaleString()}</span> has been sent to your phone.
+          </p>
+          <p className="text-gray-500 text-sm">Enter your M-Pesa PIN to complete the payment.</p>
+        </div>
+        <div className="flex items-center gap-2 text-[#49B54A] font-medium">
+          <div className="w-5 h-5 border-2 border-[#49B54A]/40 border-t-[#49B54A] rounded-full animate-spin" />
+          Waiting for confirmation…
+        </div>
+        {paymentError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm font-medium">
+            {paymentError}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -348,7 +446,7 @@ function CheckoutInner({
         {isProcessing ? (
           <>
             <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin" />
-            {paymentMethod === 'mpesa' ? 'Checking Phone...' : paymentMethod === 'paypal' ? 'Redirecting to PayPal...' : 'Processing Payment...'}
+            {paymentMethod === 'mpesa' ? 'Sending to your phone…' : paymentMethod === 'paypal' ? 'Redirecting to PayPal...' : 'Processing Payment...'}
           </>
         ) : (
           `Pay Kes ${total.toLocaleString()}`
