@@ -1,68 +1,23 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
-
-const products = [
-  {
-    id: 1,
-    name: 'Utensils holder',
-    category: 'Utensils',
-    price: 'Kes 999',
-    image: '/product-utensils-green.png',
-    tag: 'Promotion'
-  },
-  {
-    id: 2,
-    name: 'Bamboo Made Utensils',
-    category: 'Utensils',
-    price: 'Kes 1,200',
-    image: '/product-utensils-bamboo.png',
-    tag: 'New'
-  },
-  {
-    id: 3,
-    name: 'Naturesip Fridge',
-    category: 'Kitchenware',
-    price: 'Kes 4,500',
-    image: '/product-fridge.png',
-    tag: 'Favorite'
-  },
-  {
-    id: 4,
-    name: 'Reusable Drinkware',
-    category: 'Drinkware',
-    price: 'Kes 1,500',
-    image: '/product-drinkware.png',
-    tag: 'New'
-  },
-  {
-    id: 5,
-    name: 'Walnut Serving Bowls',
-    category: 'Kitchenware',
-    price: 'Kes 2,800',
-    image: '/gallery-walnut-bowls.png',
-    tag: 'Handcrafted'
-  },
-  {
-    id: 6,
-    name: 'Eco Storage Jar',
-    category: 'Kitchenware',
-    price: 'Kes 850',
-    image: '/bestsellers-banner.png',
-    tag: 'Eco-Choice'
-  },
-];
+import { products } from '@/lib/products';
 
 const categories = ['All', 'Drinkware', 'Utensils', 'Kitchenware'];
 
 export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState('All');
   const { addToCart } = useCart();
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('q')?.toLowerCase().trim() ?? '';
 
-  const filteredProducts = activeCategory === 'All' 
-    ? products 
-    : products.filter(p => p.category === activeCategory);
+  const filteredProducts = products.filter(p => {
+    const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
+    const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery) || p.category.toLowerCase().includes(searchQuery);
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <main className="bg-white min-h-screen pt-24 md:pt-32 pb-24">
@@ -72,9 +27,16 @@ export default function ShopPage() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-8">
           <div>
               <h1 className="text-4xl md:text-6xl text-gray-900 font-serif italic mb-4">Shop Collection</h1>
-              <p className="text-xl text-gray-600 max-w-lg">
-                Sustainable, planet-friendly kitchenware crafted for a healthier home.
-              </p>
+              {searchQuery ? (
+                <p className="text-xl text-gray-600 max-w-lg">
+                  Showing results for <span className="font-semibold text-gray-900">&ldquo;{searchParams.get('q')}&rdquo;</span>
+                  <a href="/shop" className="ml-3 text-sm underline text-[#11430F] hover:text-black">Clear</a>
+                </p>
+              ) : (
+                <p className="text-xl text-gray-600 max-w-lg">
+                  Sustainable, planet-friendly kitchenware crafted for a healthier home.
+                </p>
+              )}
           </div>
           
           {/* Category Filters */}
@@ -134,7 +96,9 @@ export default function ShopPage() {
 
         {filteredProducts.length === 0 && (
             <div className="text-center py-20">
-                <p className="text-2xl text-gray-500 italic">No products found in this category yet.</p>
+                <p className="text-2xl text-gray-500 italic">
+                  {searchQuery ? `No products found for "${searchParams.get('q')}"` : 'No products found in this category yet.'}
+                </p>
             </div>
         )}
 

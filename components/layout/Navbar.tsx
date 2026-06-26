@@ -7,20 +7,44 @@ import { usePathname, useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import { useCart } from '@/context/CartContext';
 import CartDrawer from './CartDrawer';
+import { products } from '@/lib/products';
+
+function HighlightMatch({ text, query }: { text: string; query: string }) {
+  if (!query) return <>{text}</>;
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark className="bg-[#e4f386] text-gray-900 rounded px-0.5">{text.slice(idx, idx + query.length)}</mark>
+      {text.slice(idx + query.length)}
+    </>
+  );
+}
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [hasOrders, setHasOrders] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
   const { cartCount, setIsCartOpen } = useCart();
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const router = useRouter();
   const isDarkTheme = pathname === '/bestsellers' || pathname === '/gallery' || pathname === '/shop' || pathname === '/about' || pathname === '/checkout' || pathname === '/login' || pathname === '/admin' || pathname === '/forgot-password' || pathname === '/reset-password';
   const isFrosted = pathname === '/login' || pathname === '/admin' || pathname === '/forgot-password' || pathname === '/reset-password';
-  
+
+  const suggestions = searchQuery.trim().length > 0
+    ? products.filter(p =>
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.category.toLowerCase().includes(searchQuery.toLowerCase())
+      ).slice(0, 5)
+    : [];
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -33,6 +57,9 @@ const Navbar = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setIsUserMenuOpen(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -47,16 +74,15 @@ const Navbar = () => {
       .catch(() => {});
   }, [status]);
 
-  // Dynamic classes based on route and scroll state
   const textColor = isDarkTheme || isScrolled ? 'text-gray-900' : 'text-white';
   const hoverColor = isDarkTheme || isScrolled ? 'hover:text-gray-600' : 'hover:text-gray-200';
   const iconBg = isDarkTheme || isScrolled ? 'bg-gray-200/50 hover:bg-gray-300/50' : 'bg-white/20 hover:bg-white/30';
   const searchBg = isDarkTheme || isScrolled ? 'bg-gray-100 placeholder-gray-500' : 'bg-white/80 placeholder-gray-800';
-  
+
   const navBg = isScrolled || isFrosted
     ? 'bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100'
     : 'bg-transparent';
-  
+
   const navPadding = isScrolled ? 'py-4 md:py-5' : 'py-6 md:py-8';
 
   const navLinks = [
@@ -71,20 +97,28 @@ const Navbar = () => {
       setIsUserMenuOpen((prev) => !prev);
       return;
     }
-
     router.push(`/login?callbackUrl=${encodeURIComponent(pathname || '/')}`);
   };
 
-  const handleCartClick = () => {
-    if (status === 'loading') {
-      return;
-    }
+  const commitSearch = (query: string) => {
+    if (!query.trim()) return;
+    router.push(`/shop?q=${encodeURIComponent(query.trim())}`);
+    setSearchQuery('');
+    setShowDropdown(false);
+    setIsMenuOpen(false);
+  };
 
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') commitSearch(searchQuery);
+    if (e.key === 'Escape') setShowDropdown(false);
+  };
+
+  const handleCartClick = () => {
+    if (status === 'loading') return;
     if (!session?.user) {
       router.push(`/login?callbackUrl=${encodeURIComponent(pathname || '/')}`);
       return;
     }
-
     setIsCartOpen(true);
   };
 
@@ -97,9 +131,9 @@ const Navbar = () => {
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
-                <Link 
-                  key={link.name} 
-                  href={link.href} 
+                <Link
+                  key={link.name}
+                  href={link.href}
                   className={`relative py-1 transition-all duration-300 ${hoverColor} ${isActive ? 'opacity-100' : 'opacity-80'}`}
                 >
                   {link.name}
@@ -111,7 +145,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center">
-            <button 
+            <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 transition-colors hover:bg-white/10 rounded-full"
             >
@@ -126,22 +160,64 @@ const Navbar = () => {
 
           {/* Search and Icons */}
           <div className="flex items-center gap-2 md:gap-4">
-            <div className="relative hidden sm:flex items-center">
-                 <Search className={`absolute left-3 w-4 h-4 font-bold ${isDarkTheme || isScrolled ? 'text-gray-500' : 'text-gray-800'}`} />
-                 <input type="text" placeholder="Search Product" className={`pl-9 pr-4 py-2 text-sm text-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-[#e4f386] w-36 lg:w-56 font-medium ${searchBg}`} />
+            {/* Desktop search with dropdown */}
+            <div ref={searchRef} className="relative hidden sm:flex items-center">
+              <button onClick={() => commitSearch(searchQuery)} className="absolute left-3 z-10 cursor-pointer">
+                <Search className={`w-4 h-4 font-bold ${isDarkTheme || isScrolled ? 'text-gray-500' : 'text-gray-800'}`} />
+              </button>
+              <input
+                type="text"
+                placeholder="Search Product"
+                value={searchQuery}
+                onChange={(e) => { setSearchQuery(e.target.value); setShowDropdown(true); }}
+                onFocus={() => setShowDropdown(true)}
+                onKeyDown={handleSearchKeyDown}
+                className={`pl-9 pr-4 py-2 text-sm text-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-[#e4f386] w-36 lg:w-56 font-medium ${searchBg}`}
+              />
+              {/* Suggestions dropdown */}
+              {showDropdown && suggestions.length > 0 && (
+                <div className="absolute top-full left-0 mt-2 w-full min-w-[220px] bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                  {suggestions.map((product) => (
+                    <button
+                      key={product.id}
+                      onMouseDown={() => commitSearch(product.name)}
+                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#f8f9f5] transition-colors text-left"
+                    >
+                      <img src={product.image} alt={product.name} className="w-9 h-9 rounded-lg object-cover bg-[#A8AD8B] shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          <HighlightMatch text={product.name} query={searchQuery} />
+                        </p>
+                        <p className="text-xs text-[#11430F] font-semibold uppercase tracking-wider">
+                          <HighlightMatch text={product.category} query={searchQuery} />
+                        </p>
+                      </div>
+                      <span className="ml-auto text-sm font-bold text-gray-700 shrink-0">{product.price}</span>
+                    </button>
+                  ))}
+                  <button
+                    onMouseDown={() => commitSearch(searchQuery)}
+                    className="w-full px-4 py-2.5 text-sm text-[#11430F] font-semibold hover:bg-[#f8f9f5] border-t border-gray-100 text-center transition-colors"
+                  >
+                    See all results for &ldquo;{searchQuery}&rdquo;
+                  </button>
+                </div>
+              )}
             </div>
-            <button 
+
+            <button
               onClick={handleCartClick}
               className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition relative ${iconBg}`}
               title={session?.user ? 'Open cart' : 'Create an account to use the cart'}
             >
-                 <ShoppingBag className={`w-4 h-4 md:w-5 md:h-5 ${textColor}`} />
-                 {cartCount > 0 && (
-                   <span className="absolute -top-1 -right-1 bg-[#11430F] text-[#e4f386] text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
-                     {cartCount}
-                   </span>
-                 )}
+              <ShoppingBag className={`w-4 h-4 md:w-5 md:h-5 ${textColor}`} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#11430F] text-[#e4f386] text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                  {cartCount}
+                </span>
+              )}
             </button>
+
             <div ref={userMenuRef} className="relative">
               <button
                 onClick={handleUserClick}
@@ -189,6 +265,7 @@ const Navbar = () => {
                 </div>
               )}
             </div>
+
             {session?.user?.name && (
               <span className={`hidden xl:inline text-sm font-medium ${textColor}`}>
                 {session.user.name}
@@ -203,17 +280,52 @@ const Navbar = () => {
       {/* Mobile Navigation Mesh Overlay */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-lg flex flex-col items-center justify-center lg:hidden">
-          <button 
+          <button
             onClick={() => setIsMenuOpen(false)}
             className="absolute top-8 right-8 text-white p-2"
           >
             <X size={32} />
           </button>
-          <div className="flex flex-col items-center gap-8">
+          <div className="flex flex-col items-center gap-8 w-full px-8">
+            {/* Mobile search */}
+            <div className="relative w-full max-w-xs">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search Product"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
+                className="w-full pl-9 pr-4 py-2.5 text-sm text-gray-800 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-[#e4f386]"
+              />
+              {/* Mobile suggestions */}
+              {suggestions.length > 0 && (
+                <div className="absolute top-full left-0 mt-2 w-full bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                  {suggestions.map((product) => (
+                    <button
+                      key={product.id}
+                      onMouseDown={() => commitSearch(product.name)}
+                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#f8f9f5] transition-colors text-left"
+                    >
+                      <img src={product.image} alt={product.name} className="w-9 h-9 rounded-lg object-cover bg-[#A8AD8B] shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          <HighlightMatch text={product.name} query={searchQuery} />
+                        </p>
+                        <p className="text-xs text-[#11430F] font-semibold uppercase tracking-wider">
+                          <HighlightMatch text={product.category} query={searchQuery} />
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {navLinks.map((link) => (
-              <Link 
-                key={link.name} 
-                href={link.href} 
+              <Link
+                key={link.name}
+                href={link.href}
                 onClick={() => setIsMenuOpen(false)}
                 className="text-white text-3xl font-medium hover:text-[#e4f386] transition-colors"
               >
