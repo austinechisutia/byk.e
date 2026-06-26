@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { FormEvent, useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
@@ -41,6 +42,7 @@ export default function AuthPageForm({ callbackUrl, oauthError }: AuthPageFormPr
   const [password, setPassword] = useState('');
   const [error, setError] = useState(() => resolveOAuthError(oauthError));
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const submitLabel = mode === 'signin' ? 'Sign In' : 'Create Account';
 
@@ -210,18 +212,28 @@ export default function AuthPageForm({ callbackUrl, oauthError }: AuthPageFormPr
           <label htmlFor="password" className="mb-1 block text-sm font-medium text-gray-700">
             Password
           </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-            minLength={AUTH_PASSWORD_MIN_LENGTH}
-            maxLength={AUTH_PASSWORD_MAX_LENGTH}
-            className="w-full rounded-2xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-[#11430F] focus:ring-2 focus:ring-[#e4f386]"
-            placeholder={`Between ${AUTH_PASSWORD_MIN_LENGTH} and ${AUTH_PASSWORD_MAX_LENGTH} characters`}
-            required
-          />
+          <div className="relative">
+            <input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+              minLength={AUTH_PASSWORD_MIN_LENGTH}
+              maxLength={AUTH_PASSWORD_MAX_LENGTH}
+              className="w-full rounded-2xl border border-gray-300 bg-white px-4 py-3 pr-11 text-sm text-gray-900 outline-none transition focus:border-[#11430F] focus:ring-2 focus:ring-[#e4f386]"
+              placeholder={`Between ${AUTH_PASSWORD_MIN_LENGTH} and ${AUTH_PASSWORD_MAX_LENGTH} characters`}
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
 
         {mode === 'signin' && (
