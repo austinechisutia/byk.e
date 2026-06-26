@@ -111,6 +111,7 @@ model Order {
   total                  Float
   status                 String      @default("pending")
   mpesaCheckoutRequestId String?
+  paystackReference      String?
   items                  OrderItem[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt

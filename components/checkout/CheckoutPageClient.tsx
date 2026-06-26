@@ -7,10 +7,6 @@ import { CheckCircle2, ChevronLeft, CreditCard, Truck, ShieldCheck } from 'lucid
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 type PaymentMethodType = 'card' | 'mpesa' | 'paypal';
 
@@ -46,25 +42,22 @@ function CheckoutInner({
   cartItems, cartTotal, shippingCost, total,
   onSuccess, clearCart,
 }: CheckoutInnerProps) {
-  const stripe = useStripe();
-  const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [mpesaPending, setMpesaPending] = useState(false);
   const [mpesaCheckoutId, setMpesaCheckoutId] = useState<string | null>(null);
 
-  // Handle returning from a 3D Secure redirect
-  useEffect(() => {
-    if (!stripe) return;
-    const clientSecret = new URLSearchParams(window.location.search).get('payment_intent_client_secret');
-    if (!clientSecret) return;
-    stripe.retrievePaymentIntent(clientSecret).then(async ({ paymentIntent }) => {
-      if (paymentIntent?.status === 'succeeded') {
-        clearCart();
-        onSuccess();
-      }
-    });
-  }, [stripe, clearCart, onSuccess]);
+  // Card details
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [cardCvv, setCardCvv] = useState('');
+  const [cardName, setCardName] = useState('');
+
+  // Charge auth flow (OTP / PIN)
+  const [chargeStep, setChargeStep] = useState<'idle' | 'otp' | 'pin'>('idle');
+  const [chargeReference, setChargeReference] = useState<string | null>(null);
+  const [authInput, setAuthInput] = useState('');
+  const [authPromptText, setAuthPromptText] = useState('');
 
   // Poll for M-Pesa payment confirmation
   useEffect(() => {
@@ -127,6 +120,55 @@ function CheckoutInner({
     return res.ok;
   };
 
+  const finalizeCardPayment = async (reference: string) => {
+    const verifyRes = await fetch(`/api/paystack/verify?reference=${encodeURIComponent(reference)}`);
+    const verifyData = await verifyRes.json() as { status: string };
+    if (verifyData.status !== 'success') {
+      setPaymentError('Payment verification failed. Please contact support.');
+      return false;
+    }
+    const saved = await createOrderRecord({ paystackReference: reference });
+    if (!saved) {
+      setPaymentError('Payment succeeded but order could not be saved. Please contact support.');
+      return false;
+    }
+    clearCart();
+    onSuccess();
+    return true;
+  };
+
+  const handleAuthSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chargeReference) return;
+    setPaymentError(null);
+    setIsProcessing(true);
+    try {
+      const endpoint = chargeStep === 'otp' ? '/api/paystack/submit-otp' : '/api/paystack/submit-pin';
+      const bodyKey = chargeStep === 'otp' ? 'otp' : 'pin';
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [bodyKey]: authInput, reference: chargeReference }),
+      });
+      const data = await res.json() as { status: string; reference: string; displayText?: string; error?: string };
+      if (!res.ok) {
+        setPaymentError(data.error ?? 'Verification failed. Please try again.');
+        return;
+      }
+      if (data.status === 'success') {
+        await finalizeCardPayment(data.reference);
+      } else if (data.status === 'send_otp') {
+        setChargeStep('otp');
+        setAuthInput('');
+        setAuthPromptText(data.displayText ?? 'Enter the OTP sent to you.');
+      } else {
+        setPaymentError('Unexpected response. Please try again or contact support.');
+      }
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setPaymentError(null);
@@ -134,51 +176,40 @@ function CheckoutInner({
 
     try {
       if (paymentMethod === 'card') {
-        if (!stripe || !elements) {
-          setPaymentError('Payment is not ready yet. Please wait a moment and try again.');
-          return;
-        }
-
-        const cardElement = elements.getElement(CardElement);
-        if (!cardElement) {
-          setPaymentError('Card field not found. Please refresh the page and try again.');
-          return;
-        }
-
-        // 1. Create PaymentIntent server-side
-        const piRes = await fetch('/api/checkout/payment-intent', {
+        const [expMonth, expYear] = cardExpiry.split('/');
+        const res = await fetch('/api/paystack/charge', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: total }),
-        });
-        if (!piRes.ok) {
-          setPaymentError('Could not initialize payment. Please try again.');
-          return;
-        }
-        const { clientSecret } = await piRes.json() as { clientSecret: string };
-
-        // 2. Confirm card payment (handles 3DS automatically)
-        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-          payment_method: {
-            card: cardElement,
-            billing_details: {
-              name: `${firstName} ${lastName}`.trim() || undefined,
-              email,
+          body: JSON.stringify({
+            email,
+            amount: total,
+            card: {
+              number: cardNumber,
+              cvv: cardCvv,
+              expiry_month: expMonth?.trim(),
+              expiry_year: expYear?.trim(),
             },
-          },
+          }),
         });
-
-        if (error) {
-          setPaymentError(error.message ?? 'Payment failed. Please try again.');
+        const data = await res.json() as { status: string; reference: string; displayText?: string; error?: string };
+        if (!res.ok) {
+          setPaymentError(data.error ?? 'Payment failed. Please try again.');
           return;
         }
-
-        // 3. Save order record after successful payment
-        const saved = await createOrderRecord({ stripePaymentIntentId: paymentIntent?.id });
-        if (!saved) {
-          setPaymentError('Payment succeeded but order could not be saved. Please contact support with your payment ID.');
-          return;
+        if (data.status === 'success') {
+          await finalizeCardPayment(data.reference);
+        } else if (data.status === 'send_otp') {
+          setChargeReference(data.reference);
+          setChargeStep('otp');
+          setAuthPromptText(data.displayText ?? 'Enter the OTP sent to you.');
+        } else if (data.status === 'send_pin') {
+          setChargeReference(data.reference);
+          setChargeStep('pin');
+          setAuthPromptText(data.displayText ?? 'Enter your card PIN.');
+        } else {
+          setPaymentError('Payment could not be completed. Please try a different card.');
         }
+        return;
       } else if (paymentMethod === 'mpesa') {
         const res = await fetch('/api/mpesa/stk-push', {
           method: 'POST',
@@ -368,22 +399,100 @@ function CheckoutInner({
                 exit={{ opacity: 0, height: 0 }}
                 className="pt-4 overflow-hidden"
               >
-                <div className="px-4 py-3 rounded-xl border border-gray-300 focus-within:ring-2 focus-within:ring-[#11430F] focus-within:border-transparent transition-all">
-                  <CardElement
-                    options={{
-                      style: {
-                        base: {
-                          fontSize: '16px',
-                          color: '#111827',
-                          fontFamily: 'inherit',
-                          '::placeholder': { color: '#6b7280' },
-                        },
-                        invalid: { color: '#ef4444' },
-                      },
-                      hidePostalCode: true,
-                    }}
-                  />
-                </div>
+                {chargeStep !== 'idle' ? (
+                  <form onSubmit={handleAuthSubmit} className="space-y-4">
+                    <p className="text-sm text-gray-700 font-medium">{authPromptText}</p>
+                    <input
+                      required
+                      type={chargeStep === 'pin' ? 'password' : 'text'}
+                      inputMode="numeric"
+                      placeholder={chargeStep === 'otp' ? 'Enter OTP' : 'Enter card PIN'}
+                      value={authInput}
+                      onChange={(e) => setAuthInput(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900 tracking-widest text-lg"
+                      autoComplete="one-time-code"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isProcessing || !authInput}
+                      className="w-full py-3 rounded-full font-bold text-base transition-all flex items-center justify-center gap-2 bg-[#11430F] text-white hover:bg-black disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    >
+                      {isProcessing ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Verifying…</> : 'Submit'}
+                    </button>
+                    <button type="button" onClick={() => { setChargeStep('idle'); setChargeReference(null); setAuthInput(''); }} className="w-full text-sm text-gray-500 hover:text-gray-700 underline">
+                      Cancel and re-enter card details
+                    </button>
+                  </form>
+                ) : (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-900 mb-1">Cardholder Name</label>
+                      <input
+                        required={paymentMethod === 'card'}
+                        type="text"
+                        placeholder="Name on card"
+                        value={cardName}
+                        onChange={(e) => setCardName(e.target.value)}
+                        autoComplete="cc-name"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-900 mb-1">Card Number</label>
+                      <input
+                        required={paymentMethod === 'card'}
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="1234 5678 9012 3456"
+                        maxLength={19}
+                        value={cardNumber}
+                        onChange={(e) => {
+                          const digits = e.target.value.replace(/\D/g, '').slice(0, 16);
+                          setCardNumber(digits.replace(/(\d{4})(?=\d)/g, '$1 '));
+                        }}
+                        autoComplete="cc-number"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900 tracking-widest"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-bold text-gray-900 mb-1">Expiry Date</label>
+                        <input
+                          required={paymentMethod === 'card'}
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="MM / YY"
+                          maxLength={7}
+                          value={cardExpiry}
+                          onChange={(e) => {
+                            const raw = e.target.value.replace(/\D/g, '').slice(0, 4);
+                            setCardExpiry(raw.length > 2 ? `${raw.slice(0, 2)} / ${raw.slice(2)}` : raw);
+                          }}
+                          autoComplete="cc-exp"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-900 mb-1">CVV</label>
+                        <input
+                          required={paymentMethod === 'card'}
+                          type="password"
+                          inputMode="numeric"
+                          placeholder="•••"
+                          maxLength={4}
+                          value={cardCvv}
+                          onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                          autoComplete="cc-csc"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#11430F] outline-none placeholder:text-gray-500 text-gray-900"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <ShieldCheck size={14} className="text-[#11430F] shrink-0" />
+                      Secured by Paystack
+                    </div>
+                  </div>
+                )}
               </motion.div>
             ) : paymentMethod === 'mpesa' ? (
               <motion.div
@@ -523,26 +632,24 @@ const CheckoutPageClient = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="lg:col-span-7 space-y-8">
-            <Elements stripe={stripePromise}>
-              <CheckoutInner
-                paymentMethod={paymentMethod}
-                setPaymentMethod={setPaymentMethod}
-                email={email} setEmail={setEmail}
-                firstName={firstName} setFirstName={setFirstName}
-                lastName={lastName} setLastName={setLastName}
-                address={address} setAddress={setAddress}
-                city={city} setCity={setCity}
-                postalCode={postalCode} setPostalCode={setPostalCode}
-                phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                paypalEmail={paypalEmail} setPaypalEmail={setPaypalEmail}
-                cartItems={cartItems}
-                cartTotal={cartTotal}
-                shippingCost={shippingCost}
-                total={total}
-                onSuccess={() => setIsSuccess(true)}
-                clearCart={clearCart}
-              />
-            </Elements>
+            <CheckoutInner
+              paymentMethod={paymentMethod}
+              setPaymentMethod={setPaymentMethod}
+              email={email} setEmail={setEmail}
+              firstName={firstName} setFirstName={setFirstName}
+              lastName={lastName} setLastName={setLastName}
+              address={address} setAddress={setAddress}
+              city={city} setCity={setCity}
+              postalCode={postalCode} setPostalCode={setPostalCode}
+              phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
+              paypalEmail={paypalEmail} setPaypalEmail={setPaypalEmail}
+              cartItems={cartItems}
+              cartTotal={cartTotal}
+              shippingCost={shippingCost}
+              total={total}
+              onSuccess={() => setIsSuccess(true)}
+              clearCart={clearCart}
+            />
           </div>
 
           <div className="lg:col-span-5">

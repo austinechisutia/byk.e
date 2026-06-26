@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
     total,
     items,
     stripePaymentIntentId,
+    paystackReference,
   } = body as Record<string, unknown>;
 
   if (
@@ -62,6 +63,7 @@ export async function POST(request: NextRequest) {
       subtotal,
       shipping,
       total,
+      paystackReference: typeof paystackReference === 'string' ? paystackReference : null,
       items: {
         create: (items as Array<Record<string, unknown>>).map((item) => ({
           productId: item.productId as number,
