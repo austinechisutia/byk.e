@@ -155,7 +155,7 @@ const Navbar = () => {
 
           {/* Logo */}
           <div className="absolute left-1/2 -translate-x-1/2">
-            <Link href="/" className="text-xl md:text-2xl font-serif tracking-wide">Homevigne</Link>
+            <Link href="/" className="text-xl md:text-2xl font-serif tracking-wide">Byk<span className="text-[#c6d753]">.</span>e</Link>
           </div>
 
           {/* Search and Icons */}

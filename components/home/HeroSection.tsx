@@ -8,8 +8,8 @@ const HeroSection = () => {
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <img
-                    src="/bg-kitchen.png"
-                    alt="Eco-friendly kitchen background"
+                    src="/bike.jpg"
+                    alt="Yellow and black bicycle"
                     className="w-full h-full object-cover"
                 />
                 {/* Dark overlay */}

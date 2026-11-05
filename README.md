@@ -1,6 +1,6 @@
-# Homevigne
+# Byk.e
 
-Homevigne is a sustainable home and kitchenware storefront designed for eco-conscious households, gift buyers, and people who want durable, beautiful essentials without sacrificing environmental values. The brand combines modern living with a practical sustainability story: better materials, slower consumption, cleaner kitchens, and a more thoughtful home.
+Byk.e is a sustainable home and kitchenware storefront designed for eco-conscious households, gift buyers, and people who want durable, beautiful essentials without sacrificing environmental values. The brand combines modern living with a practical sustainability story: better materials, slower consumption, cleaner kitchens, and a more thoughtful home.
 
 ## Role of the site
 
@@ -264,7 +264,7 @@ npm run dev
 
 ## Run summary
 
-Homevigne is a thoughtful, brand-driven commerce platform that merges sustainable product storytelling with a modern e-commerce flow. It is designed for Kenyan consumers and decision-makers who care about quality, eco-values, simplicity, and reliable local payment experiences. The application is structured around secure commerce practices, accessible product journeys, and a premium visual system that matches the brand promise.
+Byk.e is a thoughtful, brand-driven commerce platform that merges sustainable product storytelling with a modern e-commerce flow. It is designed for Kenyan consumers and decision-makers who care about quality, eco-values, simplicity, and reliable local payment experiences. The application is structured around secure commerce practices, accessible product journeys, and a premium visual system that matches the brand promise.
 
 ## Project status
 

@@ -14,7 +14,7 @@ const AboutSection = () => {
           
           <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
             <p>
-              At <span className="font-serif italic text-gray-900">Homevigne</span>, we believe that the objects we surround ourselves with should tell a story of care, quality, and respect for our planet. Our journey began with a simple desire: to bridge the gap between aesthetic excellence and environmental responsibility.
+              At <span className="font-serif italic text-gray-900">Byk<span className="text-[#c6d753]">.</span>e</span>, we believe that the objects we surround ourselves with should tell a story of care, quality, and respect for our planet. Our journey began with a simple desire: to bridge the gap between aesthetic excellence and environmental responsibility.
             </p>
             <p>
               Every piece in our collection is thoughtfully curated and crafted using sustainable materials that age beautifully. We partner with artisans who share our commitment to ethical production, ensuring that your kitchen is not just a place for meals, but a sanctuary of <span className="text-[#11430F] font-medium">positive impact</span>.
