@@ -1,57 +1,9 @@
 "use client";
 
 import React from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function GalleryPage() {
-  const images = [
-    {
-      src: '/gallery-walnut-bowls.png',
-      alt: 'Artisanal Walnut Bowls',
-      title: 'Walnut Wood',
-      subtitle: 'Creative',
-      large: false
-    },
-    {
-      src: '/product-utensils-green.png',
-      alt: 'Copper Fruit Stand',
-      title: 'Copper Mesh',
-      subtitle: 'Creative',
-      large: true
-    },
-    {
-      src: '/product-utensils-bamboo.png',
-      alt: 'Marble Rolling Pin',
-      title: 'Marble & Wood',
-      subtitle: 'Creative',
-      large: false
-    },
-    {
-      src: '/product-fridge.png',
-      alt: 'Wooden Utensil Holder',
-      title: 'Solid Oak',
-      subtitle: 'Inspire',
-      large: true
-    },
-    {
-      src: '/product-drinkware.png',
-      alt: 'Chicken Egg Basket',
-      title: 'Vintage Wire',
-      subtitle: 'Creative',
-      large: false
-    }
-  ];
-
-  const scrollRef = React.useRef<HTMLDivElement>(null);
-
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      const { scrollLeft, clientWidth } = scrollRef.current;
-      const scrollTo = direction === 'left' ? scrollLeft - clientWidth : scrollLeft + clientWidth;
-      scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
-    }
-  };
-
   return (
     <main className="bg-[#f9f9f7] min-h-screen pt-24 md:pt-32 pb-16 md:pb-24 overflow-hidden">
       <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 font-sans tracking-wide">
@@ -59,62 +11,36 @@ export default function GalleryPage() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start mb-10 md:mb-16 gap-6 md:gap-0">
           <h1 className="text-2xl sm:text-3xl md:text-4xl text-gray-800 font-normal leading-tight">
-            Thoughtful Planet -Priotizing <span className="font-serif italic">Ideas</span> <br/>
-            and inspiration <span className="font-serif italic font-medium">Gallery</span>
+            Bikes for <span className="font-serif italic">city streets</span>, <br/>
+            open roads, and <span className="font-serif italic font-medium">new routes</span>
           </h1>
-          <div className="flex gap-4">
-            <button 
-              onClick={() => scroll('left')}
-              className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-gray-300 flex items-center justify-center text-gray-400 hover:bg-gray-100 transition"
-            >
-              <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
-            </button>
-            <button 
-              onClick={() => scroll('right')}
-              className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#11430F] flex items-center justify-center text-white hover:opacity-90 transition"
-            >
-              <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
-            </button>
+          <p className="text-gray-600 max-w-sm">A look at the bike currently featured in the Byk.e collection.</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_0.6fr] gap-10 items-center">
+          <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-gray-200">
+            <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-black/15"></div>
+            <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 text-white">
+              <p className="text-sm uppercase tracking-widest">Urban riding</p>
+              <h2 className="text-3xl md:text-5xl font-medium mt-2">Fixed-gear bicycle</h2>
+            </div>
+          </div>
+          <div className="space-y-5">
+            <h2 className="text-2xl md:text-3xl font-medium text-gray-900">Find your kind of ride</h2>
+            <p className="text-gray-600 leading-relaxed">Browse electric bikes, city and hybrid bicycles, replacement parts, and everyday riding accessories.</p>
+            <div className="flex flex-wrap gap-3 pt-2">
+              {['Electric Bikes', 'Bikes', 'Parts', 'Accessories'].map((category) => (
+                <Link key={category} href="/shop" className="px-4 py-2 border border-gray-300 text-gray-800 hover:border-[#11430F] hover:text-[#11430F] transition-colors">
+                  {category}
+                </Link>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 pt-2">Only the featured bicycle is photographed here. Product images and specifications should be added for each listing.</p>
           </div>
         </div>
 
-        {/* Gallery Slider/Grid */}
-        <div 
-          ref={scrollRef}
-          className="flex gap-4 md:gap-6 overflow-x-auto pb-8 no-scrollbar scroll-smooth"
-        >
-          {images.map((img, index) => (
-            <div 
-              key={index} 
-              className={`relative flex-shrink-0 rounded-2xl md:rounded-3xl overflow-hidden group transition-all duration-500 ${img.large ? 'w-[75vw] sm:w-[450px] aspect-[4/5]' : 'w-[65vw] sm:w-[320px] aspect-[3/4]'}`}
-            >
-              <img 
-                src={img.src} 
-                alt={img.alt} 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
-              
-              {/* Overlay Text */}
-              <div className="absolute bottom-6 md:bottom-10 left-6 md:left-8 text-white z-10 pointer-events-none">
-                <p className="text-xl md:text-2xl font-medium drop-shadow-md mb-0">{img.title}</p>
-                <p className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl drop-shadow-lg leading-none mt-[-4px]">{img.subtitle}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
       </div>
-
-      <style jsx global>{`
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </main>
   );
 }

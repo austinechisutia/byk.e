@@ -6,27 +6,27 @@ import ScrollReveal from '../layout/ScrollReveal';
 const ReviewsSection = () => {
     const reviews = [
         {
-            text: "Home dine's glass jars are awesome for storage and the bamboo utensils are good for daily use",
-            name: "Jane Cooper",
-            role: "Nutritionist",
+            text: "Think about your usual route, distance, and terrain before choosing a bike.",
+            name: "Choose your route",
+            role: "Commute, trail, or weekend ride",
             active: false
         },
         {
-            text: "Home dine's glass jars are awesome for storage and the bamboo utensils are good for daily use",
-            name: "Jane Cooper",
-            role: "Nutritionist",
+            text: "An electric bike adds pedal assistance for hills and longer days in the saddle.",
+            name: "Consider electric",
+            role: "Compare assist options",
             active: false
         },
         {
-            text: "Home dine's glass jars are awesome for storage and the bamboo utensils are good for daily use",
-            name: "Jane Cooper",
-            role: "Nutritionist",
+            text: "Check frame fit and component compatibility before ordering a bike or part.",
+            name: "Check the details",
+            role: "Fit and compatibility matter",
             active: true
         },
         {
-            text: "Home dine's glass jars are awesome for storage and the bamboo utensils are good for daily use",
-            name: "Jane Cooper",
-            role: "Nutritionist",
+            text: "Helmets, racks, locks, and replacement parts help tailor a setup to your day.",
+            name: "Finish your setup",
+            role: "Parts and accessories",
             active: false
         }
     ];
@@ -38,20 +38,20 @@ const ReviewsSection = () => {
                 {/* Header Area */}
                 <ScrollReveal direction="down" className="flex flex-col md:flex-row items-center md:items-start justify-between mb-16 gap-8 md:gap-0">
                     <div className="relative flex items-center h-32 md:h-48">
-                        <span className="text-8xl md:text-[10rem] font-serif italic tracking-tighter leading-none text-gray-900 pr-4">4.9</span>
+                        <span className="text-8xl md:text-[10rem] font-serif italic tracking-tighter leading-none text-gray-900 pr-4">01</span>
                         <div className="relative h-full flex items-center">
                             {/* Large Diagonal Slash */}
                             <div className="w-[2px] h-24 md:h-40 bg-gray-900 origin-bottom-left rotate-[25deg] md:rotate-[20deg] absolute left-0"></div>
-                            <span className="text-3xl md:text-5xl font-medium pt-12 md:pt-24 pl-6 md:pl-10">5</span>
+                            <span className="text-3xl md:text-5xl font-medium pt-12 md:pt-24 pl-6 md:pl-10">03</span>
                         </div>
                     </div>
 
                     <div className="max-w-xs md:max-w-sm text-center md:text-left pt-8 md:pt-12">
                         <p className="text-2xl md:text-3xl font-normal leading-tight text-gray-800">
-                            More than <span className="font-bold">25,000</span> <br/>
-                            <span className="font-bold">5-star</span> Reviews for <br/>
-                            our Award winning <br/>
-                            Eco- Products
+                            A few things <br/>
+                            to consider <br/>
+                            before your <br/>
+                            next ride
                         </p>
                     </div>
                 </ScrollReveal>

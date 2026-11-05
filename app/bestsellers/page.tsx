@@ -13,11 +13,11 @@ export default function BestsellersPage() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-12 gap-6 md:gap-0">
           <h1 className="text-2xl md:text-3xl text-gray-700 font-normal leading-snug">
-            Explore our Thoughtful and <br className="hidden sm:block" />
-            Planet-first <span className="font-serif italic font-medium">Products</span>
+            Explore bikes for <br className="hidden sm:block" />
+            city, trail, and <span className="font-serif italic font-medium">everyday</span>
           </h1>
           <Link href="/shop" className="flex items-center gap-2 text-xl md:text-2xl text-[#11430F] hover:opacity-80 transition font-medium">
-             More products <span className="text-2xl md:text-3xl mt-[-4px]">&rarr;</span>
+             Shop all <span className="text-2xl md:text-3xl mt-[-4px]">&rarr;</span>
           </Link>
         </div>
 
@@ -26,17 +26,17 @@ export default function BestsellersPage() {
             
             {/* Card 1 */}
             <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#a5ab8b] group flex flex-col items-center justify-end pb-8">
-                <img src="/product-utensils-green.png" alt="Cup&co Utensils" className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-500 group-hover:scale-105" />
+                <img src="/electric-bike-placeholder.svg" alt="Illustrative electric bike" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 <div className="relative z-10 flex flex-col items-center text-white">
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
-                    <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Cup&co</span>
+                    <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">City Electric</span>
                     <button 
                       onClick={() => addToCart({
                         id: 1,
-                        name: 'Cup&co Utensils',
-                        price: 'Kes 999',
-                        image: '/product-utensils-green.png',
-                        category: 'Utensils'
+                        name: 'City Electric Bike',
+                        price: 'Kes 145,000',
+                        image: '/bike.jpg',
+                        category: 'Electric Bikes'
                       })}
                       className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
                     >
@@ -47,17 +47,17 @@ export default function BestsellersPage() {
 
             {/* Card 2 */}
             <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#a5ab8b] group flex flex-col items-center justify-end pb-8">
-                <img src="/product-utensils-bamboo.png" alt="Ecospoonery Bamboo" className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-500 group-hover:scale-105" />
+                <img src="/electric-bike-placeholder.svg" alt="Illustrative electric bike" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 <div className="relative z-10 flex flex-col items-center text-white">
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
-                    <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Ecospoonery</span>
+                    <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Trail Electric</span>
                     <button 
                       onClick={() => addToCart({
                         id: 2,
-                        name: 'Ecospoonery Bamboo',
-                        price: 'Kes 1,200',
-                        image: '/product-utensils-bamboo.png',
-                        category: 'Utensils'
+                        name: 'Trail Electric Bike',
+                        price: 'Kes 198,000',
+                        image: '/bike.jpg',
+                        category: 'Electric Bikes'
                       })}
                       className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
                     >
@@ -68,17 +68,17 @@ export default function BestsellersPage() {
 
             {/* Card 3 */}
             <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#a5ab8b] group flex flex-col items-center justify-end pb-8">
-                <img src="/product-fridge.png" alt="Naturesip Fridge" className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-500 group-hover:scale-105" />
+                <img src="/electric-bike-placeholder.svg" alt="Illustrative electric bike" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 <div className="relative z-10 flex flex-col items-center text-white">
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
-                    <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Naturesip</span>
+                    <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Folding E-Bike</span>
                     <button 
                       onClick={() => addToCart({
                         id: 3,
-                        name: 'Naturesip Fridge',
-                        price: 'Kes 4,500',
-                        image: '/product-fridge.png',
-                        category: 'Kitchenware'
+                        name: 'Compact Folding E-Bike',
+                        price: 'Kes 132,000',
+                        image: '/bike.jpg',
+                        category: 'Electric Bikes'
                       })}
                       className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
                     >
@@ -89,17 +89,17 @@ export default function BestsellersPage() {
 
             {/* Card 4 */}
             <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#a5ab8b] group flex flex-col items-center justify-end pb-8">
-                <img src="/product-drinkware.png" alt="Naturesip Flask" className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-500 group-hover:scale-105" />
+                <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 <div className="relative z-10 flex flex-col items-center text-white">
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
-                    <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Naturesip</span>
+                    <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Fixed-Gear City</span>
                     <button 
                       onClick={() => addToCart({
                         id: 4,
-                        name: 'Naturesip Flask',
-                        price: 'Kes 1,500',
-                        image: '/product-drinkware.png',
-                        category: 'Drinkware'
+                        name: 'Fixed-Gear City Bicycle',
+                        price: 'Kes 48,000',
+                        image: '/bike.jpg',
+                        category: 'Bikes'
                       })}
                       className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
                     >
@@ -110,13 +110,15 @@ export default function BestsellersPage() {
 
         </div>
 
+        <p className="mb-12 text-sm text-gray-500">Illustrative product artwork and sample KES prices. Confirm specifications and availability before purchase.</p>
+
         {/* Bottom Banner Area */}
         <div className="flex flex-col md:flex-row items-center md:items-end justify-between w-full min-h-[200px] md:h-[300px] gap-8 md:gap-0">
             <div className="mb-0 md:mb-4 text-center md:text-left">
                <span className="font-[family-name:var(--font-great-vibes)] text-[4rem] sm:text-[5rem] md:text-[6rem] leading-none text-black whitespace-nowrap">Best Sellers</span>
             </div>
             <div className="w-full md:w-1/2 h-48 md:h-full rounded-2xl md:rounded-none md:rounded-tl-3xl md:rounded-bl-3xl overflow-hidden">
-                <img src="/bestsellers-banner.png" alt="Best Sellers Jar" className="w-full h-full object-cover object-center" />
+                <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="w-full h-full object-cover object-center" />
             </div>
         </div>
 

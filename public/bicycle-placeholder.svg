@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 960" fill="none">
+  <rect width="800" height="960" fill="#E7EAE1"/>
+  <path d="M0 690h800" stroke="#C5CBBE" stroke-width="2"/>
+  <circle cx="228" cy="558" r="132" stroke="#26352D" stroke-width="16"/>
+  <circle cx="584" cy="558" r="132" stroke="#26352D" stroke-width="16"/>
+  <path d="m228 558 132-214 104 214H228Zm132-214h122l102 214M360 344l-30-54h-70m174 268 78-214" stroke="#315B43" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"/>
+  <path d="M313 289h-78m341 9h70" stroke="#26352D" stroke-linecap="round" stroke-width="14"/>
+  <text x="400" y="120" fill="#26352D" font-family="Arial,sans-serif" font-size="32" font-weight="700" letter-spacing="7" text-anchor="middle">BICYCLE</text>
+  <text x="400" y="854" fill="#59645A" font-family="Arial,sans-serif" font-size="18" letter-spacing="5" text-anchor="middle">ILLUSTRATIVE SAMPLE</text>
+</svg>

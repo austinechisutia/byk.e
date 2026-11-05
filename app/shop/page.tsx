@@ -37,7 +37,7 @@ export default function ShopPage() {
                   Browse electric bikes, everyday bicycles, replacement parts, and ride-ready accessories.
                 </p>
               )}
-              <p className="mt-3 text-sm text-gray-500">Sample catalogue and KES prices. Confirm product details and availability before purchase.</p>
+              <p className="mt-3 text-sm text-gray-500">Illustrative product artwork and sample KES prices. Confirm specifications, compatibility, and availability before purchase.</p>
           </div>
           
           {/* Category Filters */}

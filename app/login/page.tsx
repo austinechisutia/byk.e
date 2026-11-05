@@ -33,10 +33,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             Vigne Account
           </p>
           <h1 className="font-serif text-5xl leading-tight text-[#11430F] md:text-7xl">
-            Kitchenware crafted for a greener home.
+            Bikes and gear for the road ahead.
           </h1>
           <p className="mt-6 max-w-lg text-base leading-7 text-gray-700 md:text-lg">
-            Sign in to save your favourites, track orders, and shop our full range of eco-friendly kitchenware — made from natural, sustainable materials.
+            Sign in to save your favourites, track orders, and shop electric bikes, bicycles, parts, and ride accessories.
           </p>
 
           <div className="mt-8 grid gap-4 text-sm text-gray-700 sm:grid-cols-3">

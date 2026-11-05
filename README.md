@@ -1,12 +1,12 @@
 # Byk.e
 
-Byk.e is a sustainable home and kitchenware storefront designed for eco-conscious households, gift buyers, and people who want durable, beautiful essentials without sacrificing environmental values. The brand combines modern living with a practical sustainability story: better materials, slower consumption, cleaner kitchens, and a more thoughtful home.
+Byk.e is a bicycle storefront for riders shopping electric bikes, everyday bicycles, replacement parts, and riding accessories.
 
 ## Role of the site
 
 This site is not just a catalogue — it is a conversion-focused commerce experience for a lifestyle brand. It exists to help people:
 
-- discover eco-friendly kitchenware and home goods
+- browse electric bikes, bicycles, parts, and riding accessories
 - shop by product and category with a clear buying journey
 - create a personal account and manage orders
 - place orders through familiar local payment methods
@@ -264,7 +264,7 @@ npm run dev
 
 ## Run summary
 
-Byk.e is a thoughtful, brand-driven commerce platform that merges sustainable product storytelling with a modern e-commerce flow. It is designed for Kenyan consumers and decision-makers who care about quality, eco-values, simplicity, and reliable local payment experiences. The application is structured around secure commerce practices, accessible product journeys, and a premium visual system that matches the brand promise.
+Byk.e is a bicycle commerce platform with a modern e-commerce flow for Kenyan riders, including local payment options and account-based order management.
 
 ## Project status
 

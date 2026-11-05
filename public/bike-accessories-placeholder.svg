@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 960" fill="none">
+  <rect width="800" height="960" fill="#E7EAE1"/>
+  <path d="M194 538c0-151 92-254 206-254s206 103 206 254H194Z" fill="#D3E76B" stroke="#26352D" stroke-linejoin="round" stroke-width="18"/>
+  <path d="M194 538h412m-327 0 36-119m177 119-36-119m-74-135v136m-123 0h247" stroke="#26352D" stroke-linecap="round" stroke-width="18"/>
+  <path d="M236 570c20 58 79 96 164 96s144-38 164-96" stroke="#315B43" stroke-linecap="round" stroke-width="18"/>
+  <text x="400" y="120" fill="#26352D" font-family="Arial,sans-serif" font-size="32" font-weight="700" letter-spacing="7" text-anchor="middle">RIDE GEAR</text>
+  <text x="400" y="854" fill="#59645A" font-family="Arial,sans-serif" font-size="18" letter-spacing="5" text-anchor="middle">ILLUSTRATIVE SAMPLE</text>
+</svg>
