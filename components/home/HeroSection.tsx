@@ -21,15 +21,14 @@ const HeroSection = () => {
                 {/* Left side text */}
                 <ScrollReveal className="flex flex-col items-start text-white pt-10 md:pt-0">
                     <h1 className="text-4xl sm:text-5xl md:text-[5.5rem] font-medium leading-[1.1] mb-6 tracking-tight">
-                        Eco friendly <br />
-                        <span className="font-serif italic text-[#c6d753] font-normal pr-2 md:pr-4 tracking-normal">Kitchenware</span> for <br />
-                        a greener home
+                        Find your <br />
+                        <span className="font-serif italic text-[#c6d753] font-normal pr-2 md:pr-4 tracking-normal">next ride</span> here.
                     </h1>
                     <p className="max-w-md text-gray-200 text-base md:text-[1.1rem] mb-8 md:mb-10 font-light opacity-90 leading-relaxed inline-block">
-                        The eco-friendly kitchenware niche with a sense<br className="hidden md:block" /> of agency, much like original banner.
+                        Shop electric bikes, everyday bicycles, and the parts and gear that keep every ride moving.
                     </p>
                     <Link href="/shop" className="bg-[#e4f386] hover:bg-[#d8e874] text-black rounded-[2rem] px-6 md:px-8 py-2.5 md:py-3 text-xl md:text-2xl font-medium flex items-center gap-3 transition-transform hover:scale-105">
-                        Shop now <span className="text-2xl md:text-3xl font-light mt-[-4px]">&rarr;</span>
+                        Shop bikes <span className="text-2xl md:text-3xl font-light mt-[-4px]">&rarr;</span>
                     </Link>
                 </ScrollReveal>
 
@@ -37,12 +36,12 @@ const HeroSection = () => {
                 <ScrollReveal direction="right" delay={0.2} className="flex justify-end relative h-full items-end mt-12 md:mt-0">
                     <div className="bg-black/60 backdrop-blur-md rounded-2xl p-6 md:p-10 max-w-sm border border-white/10 relative shadow-2xl w-full mr-0 md:mr-4">
                         <p className="text-white text-xl md:text-[1.7rem] font-light leading-snug mb-8 md:mb-10 relative z-10 tracking-wide">
-                            Natural. <br />
-                            Sustainable. <br />
-                            Eco-conscious.
+                            City rides. <br />
+                            Trail days. <br />
+                            Electric power.
                         </p>
                         <p className="text-[#e4f386] text-6xl md:text-[7.5rem] font-serif italic m-0 text-right pr-2 pb-0 leading-none relative z-10 opacity-90">
-                            96%
+                            E-
                         </p>
                         {/* Leaf icon */}
                         <div className="absolute top-6 right-6 md:top-10 md:right-10 text-white">

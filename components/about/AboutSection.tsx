@@ -8,34 +8,34 @@ const AboutSection = () => {
         <div className="order-2 md:order-1">
           <h2 className="text-3xl md:text-5xl font-medium leading-[1.2] mb-8 text-gray-900">
             Dedicated to <br />
-            <span className="font-serif italic text-[#11430F] font-normal">conscious living</span> <br />
-            and timeless design.
+            <span className="font-serif italic text-[#11430F] font-normal">better riding</span> <br />
+            for every journey.
           </h2>
           
           <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
             <p>
-              At <span className="font-serif italic text-gray-900">Byk<span className="text-[#c6d753]">.</span>e</span>, we believe that the objects we surround ourselves with should tell a story of care, quality, and respect for our planet. Our journey began with a simple desire: to bridge the gap between aesthetic excellence and environmental responsibility.
+                At <span className="font-serif italic text-gray-900">Byk<span className="text-[#c6d753]">.</span>e</span>, we bring bicycles, electric bikes, and ride essentials together in one place. Whether you commute across town or head out for the weekend, the right setup starts with how and where you ride.
             </p>
             <p>
-              Every piece in our collection is thoughtfully curated and crafted using sustainable materials that age beautifully. We partner with artisans who share our commitment to ethical production, ensuring that your kitchen is not just a place for meals, but a sanctuary of <span className="text-[#11430F] font-medium">positive impact</span>.
+                Explore everyday bicycles, e-bikes, replacement parts, and practical accessories. Compare what matters for your route, check fit and compatibility, and choose the gear that works for your next ride.
             </p>
             <p className="font-medium text-gray-900">
-              Join us in cultivating a home that honors nature without compromising on style.
+                Our catalogue is a starting point. Confirm product specifications, compatibility, pricing, and availability before purchase.
             </p>
           </div>
 
           <div className="mt-10 flex flex-wrap gap-4">
             <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
               <span className="w-2 h-2 bg-[#e4f386] rounded-full"></span>
-              Ethically Sourced
+              Electric Bikes
             </div>
             <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
               <span className="w-2 h-2 bg-[#e4f386] rounded-full"></span>
-              Ultra-durable
+              Parts &amp; Gear
             </div>
             <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-sm font-medium text-gray-700">
               <span className="w-2 h-2 bg-[#e4f386] rounded-full"></span>
-              Zero-waste goal
+              Ready to Ride
             </div>
           </div>
         </div>
@@ -44,8 +44,8 @@ const AboutSection = () => {
         <div className="order-1 md:order-2 relative group">
           <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl relative z-10">
             <img 
-              src="/gallery-walnut-bowls.png" 
-              alt="Artisanal kitchenware" 
+              src="/bike.jpg" 
+              alt="Black and yellow fixed-gear bicycle" 
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-[#11430F]/10 group-hover:bg-transparent transition-colors duration-500"></div>

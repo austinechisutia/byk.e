@@ -32,7 +32,7 @@ const greatVibes = Great_Vibes({
 
 export const metadata: Metadata = {
   title: "Byk.e",
-  description: "Thoughtfully curated essentials for conscious living.",
+  description: "Shop electric bikes, bicycles, parts, and riding accessories at Byk.e.",
 };
 
 export default function RootLayout({

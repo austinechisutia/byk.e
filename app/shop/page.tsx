@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { products } from '@/lib/products';
 
-const categories = ['All', 'Drinkware', 'Utensils', 'Kitchenware'];
+const categories = ['All', 'Electric Bikes', 'Bikes', 'Parts', 'Accessories'];
 
 export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -34,9 +34,10 @@ export default function ShopPage() {
                 </p>
               ) : (
                 <p className="text-xl text-gray-600 max-w-lg">
-                  Sustainable, planet-friendly kitchenware crafted for a healthier home.
+                  Browse electric bikes, everyday bicycles, replacement parts, and ride-ready accessories.
                 </p>
               )}
+              <p className="mt-3 text-sm text-gray-500">Sample catalogue and KES prices. Confirm product details and availability before purchase.</p>
           </div>
           
           {/* Category Filters */}
