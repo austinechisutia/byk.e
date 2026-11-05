@@ -25,7 +25,9 @@ const BestsellersSection = () => {
             {/* Card 1 */}
             <ScrollReveal delay={0.1} className="flex flex-col rounded-xl overflow-hidden bg-[#e9fba7]">
                 <div className="relative aspect-[4/5] w-full bg-[#A8AD8B]">
-                    <img src="/electric-bike-placeholder.svg" alt="Illustrative electric bike" className="w-full h-full object-cover" />
+                    <Link href="/bikes/1" aria-label="View City Electric Bike details" className="block h-full w-full">
+                      <img src="/electric-bike-placeholder.svg" alt="Illustrative City Electric Bike" className="w-full h-full object-cover" />
+                    </Link>
                     <span className="absolute top-4 left-4 border border-white/50 text-white bg-black/30 backdrop-blur-sm px-4 py-1 rounded-full text-sm">Electric</span>
                 </div>
                 <div className="p-5 flex flex-col justify-between flex-1 gap-4">
@@ -33,7 +35,7 @@ const BestsellersSection = () => {
                         <div className="flex items-center gap-1.5 mb-3">
                             <span className="text-xs uppercase tracking-widest text-[#11430F]">Electric Bikes</span>
                         </div>
-                        <h4 className="text-gray-900 font-medium text-lg leading-tight">City Electric Bike</h4>
+                        <h4 className="text-gray-900 font-medium text-lg leading-tight"><Link href="/bikes/1" className="hover:text-[#11430F]">City Electric Bike</Link></h4>
                     </div>
                     <div className="flex justify-between items-end mt-auto">
                         <span className="text-gray-900 font-medium">Kes 145,000</span>
@@ -56,7 +58,9 @@ const BestsellersSection = () => {
             {/* Card 2 */}
             <ScrollReveal delay={0.2} className="flex flex-col rounded-xl overflow-hidden bg-[#e9fba7]">
                 <div className="relative aspect-[4/5] w-full bg-[#A8AD8B]">
-                    <img src="/electric-bike-placeholder.svg" alt="Illustrative electric bike" className="w-full h-full object-cover" />
+                    <Link href="/bikes/2" aria-label="View Trail Electric Bike details" className="block h-full w-full">
+                      <img src="/electric-bike-placeholder.svg" alt="Illustrative Trail Electric Bike" className="w-full h-full object-cover" />
+                    </Link>
                     <span className="absolute top-4 left-4 border border-white/50 text-white bg-black/30 backdrop-blur-sm px-4 py-1 rounded-full text-sm">Electric</span>
                 </div>
                 <div className="p-5 flex flex-col justify-between flex-1 gap-4">
@@ -64,7 +68,7 @@ const BestsellersSection = () => {
                         <div className="flex items-center gap-1.5 mb-3">
                             <span className="text-xs uppercase tracking-widest text-[#11430F]">Electric Bikes</span>
                         </div>
-                        <h4 className="text-gray-900 font-medium text-lg leading-tight">Trail Electric Bike</h4>
+                        <h4 className="text-gray-900 font-medium text-lg leading-tight"><Link href="/bikes/2" className="hover:text-[#11430F]">Trail Electric Bike</Link></h4>
                     </div>
                     <div className="flex justify-between items-end mt-auto">
                         <span className="text-gray-900 font-medium">Kes 198,000</span>
@@ -87,7 +91,9 @@ const BestsellersSection = () => {
             {/* Card 3 */}
             <ScrollReveal delay={0.3} className="flex flex-col rounded-xl overflow-hidden bg-[#e9fba7]">
                 <div className="relative aspect-[4/5] w-full bg-[#A8AD8B]">
-                    <img src="/electric-bike-placeholder.svg" alt="Illustrative electric bike" className="w-full h-full object-cover" />
+                    <Link href="/bikes/3" aria-label="View Compact Folding E-Bike details" className="block h-full w-full">
+                      <img src="/electric-bike-placeholder.svg" alt="Illustrative Compact Folding E-Bike" className="w-full h-full object-cover" />
+                    </Link>
                     <span className="absolute top-4 left-4 border border-white/50 text-white bg-black/30 backdrop-blur-sm px-4 py-1 rounded-full text-sm">Folding</span>
                 </div>
                 <div className="p-5 flex flex-col justify-between flex-1 gap-4">
@@ -95,7 +101,7 @@ const BestsellersSection = () => {
                         <div className="flex items-center gap-1.5 mb-3">
                             <span className="text-xs uppercase tracking-widest text-[#11430F]">Electric Bikes</span>
                         </div>
-                        <h4 className="text-gray-900 font-medium text-lg leading-tight">Compact Folding E-Bike</h4>
+                        <h4 className="text-gray-900 font-medium text-lg leading-tight"><Link href="/bikes/3" className="hover:text-[#11430F]">Compact Folding E-Bike</Link></h4>
                     </div>
                     <div className="flex justify-between items-end mt-auto">
                         <span className="text-gray-900 font-medium">Kes 132,000</span>
@@ -118,7 +124,9 @@ const BestsellersSection = () => {
             {/* Card 4 */}
             <ScrollReveal delay={0.4} className="flex flex-col rounded-xl overflow-hidden bg-[#e9fba7]">
                 <div className="relative aspect-[4/5] w-full bg-[#A8AD8B]">
-                    <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="w-full h-full object-cover" />
+                    <Link href="/bikes/4" aria-label="View Fixed-Gear City Bicycle details" className="block h-full w-full">
+                      <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="w-full h-full object-cover" />
+                    </Link>
                     <span className="absolute top-4 left-4 border border-white/50 text-white bg-black/30 backdrop-blur-sm px-4 py-1 rounded-full text-sm">City</span>
                 </div>
                 <div className="p-5 flex flex-col justify-between flex-1 gap-4">
@@ -126,7 +134,7 @@ const BestsellersSection = () => {
                         <div className="flex items-center gap-1.5 mb-3">
                             <span className="text-xs uppercase tracking-widest text-[#11430F]">Bikes</span>
                         </div>
-                        <h4 className="text-gray-900 font-medium text-lg leading-tight">Fixed-Gear City Bicycle</h4>
+                        <h4 className="text-gray-900 font-medium text-lg leading-tight"><Link href="/bikes/4" className="hover:text-[#11430F]">Fixed-Gear City Bicycle</Link></h4>
                     </div>
                     <div className="flex justify-between items-end mt-auto">
                         <span className="text-gray-900 font-medium">Kes 48,000</span>

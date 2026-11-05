@@ -24,3 +24,25 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@media (max-width: 639px) {
+  :root {
+    --text-xs: calc(0.75rem * 0.9);
+    --text-sm: calc(0.875rem * 0.9);
+    --text-base: calc(1rem * 0.9);
+    --text-lg: calc(1.125rem * 0.9);
+    --text-xl: calc(1.25rem * 0.9);
+    --text-2xl: calc(1.5rem * 0.9);
+    --text-3xl: calc(1.875rem * 0.9);
+    --text-4xl: calc(2.25rem * 0.9);
+    --text-5xl: calc(3rem * 0.9);
+    --text-6xl: calc(3.75rem * 0.9);
+    --text-7xl: calc(4.5rem * 0.9);
+    --text-8xl: calc(6rem * 0.9);
+    --text-9xl: calc(8rem * 0.9);
+  }
+
+  body {
+    font-size: 0.9rem;
+  }
+}

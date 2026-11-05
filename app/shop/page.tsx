@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { products } from '@/lib/products';
 
-const categories = ['All', 'Electric Bikes', 'Bikes', 'Parts', 'Accessories'];
+const categories = ['All', 'Electric Bikes', 'Bikes', 'Parts', 'Accessories', 'Riding Clothing', 'Merchandise'];
 
-export default function ShopPage() {
+function ShopContent() {
   const [activeCategory, setActiveCategory] = useState('All');
   const { addToCart } = useCart();
   const searchParams = useSearchParams();
@@ -34,10 +35,30 @@ export default function ShopPage() {
                 </p>
               ) : (
                 <p className="text-xl text-gray-600 max-w-lg">
-                  Browse electric bikes, everyday bicycles, replacement parts, and ride-ready accessories.
+                  Browse bikes, riding gear, accessories, and Byk.e merchandise.
                 </p>
               )}
-              <p className="mt-3 text-sm text-gray-500">Illustrative product artwork and sample KES prices. Confirm specifications, compatibility, and availability before purchase.</p>
+              <p className="mt-3 text-sm text-gray-500">Illustrative product artwork and sample KES prices. Parts may vary by bike; confirm size, fit, drivetrain, brake, axle, and e-bike system compatibility and availability before purchase.</p>
+              <p className="mt-3 max-w-2xl text-sm text-gray-600">
+                Budget find: a 16-inch children&apos;s bicycle was{' '}
+                <a
+                  href="https://www.kilimall.co.ke/listing/1000423667-Girls-heavy-duty-bike-size-16-49-years-strong-and-durable-BRAND-NEW-KIDS-BICYCLES-SIZE-16-pink-and-purple"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#11430F] underline"
+                >
+                  listed at KSh 6,499 on Kilimall
+                </a>{' '}
+                when checked; price and stock may change. We couldn&apos;t verify an adult bicycle under KSh 10,000.{' '}
+                <a
+                  href="https://cycleafricabikes.com/product-category/adultsbikes/mountain-bikes/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#11430F] underline"
+                >
+                  Cycle Africa says entry-level adult mountain bikes start under KSh 20,000.
+                </a>
+              </p>
           </div>
           
           {/* Category Filters */}
@@ -63,11 +84,21 @@ export default function ShopPage() {
             {filteredProducts.map(product => (
                 <div key={product.id} className="group flex flex-col rounded-2xl overflow-hidden bg-[#f8f9f5] border border-gray-100/50 hover:shadow-xl transition-shadow duration-500">
                     <div className="relative aspect-[4/5] w-full bg-[#A8AD8B] overflow-hidden">
-                        <img 
-                            src={product.image} 
-                            alt={product.name} 
-                            className="w-full h-full object-cover mix-blend-multiply opacity-90 group-hover:scale-105 transition-transform duration-700" 
-                        />
+                        {product.category === 'Bikes' || product.category === 'Electric Bikes' ? (
+                          <Link href={`/bikes/${product.id}`} aria-label={`View details for ${product.name}`} className="block h-full w-full">
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="h-full w-full object-cover mix-blend-multiply opacity-90 transition-transform duration-700 group-hover:scale-105"
+                            />
+                          </Link>
+                        ) : (
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="h-full w-full object-cover mix-blend-multiply opacity-90 transition-transform duration-700 group-hover:scale-105"
+                          />
+                        )}
                         {product.tag && (
                             <span className="absolute top-4 left-4 border border-white/50 text-white bg-black/20 backdrop-blur-md px-4 py-1 rounded-full text-xs font-serif italic tracking-wider">
                                 {product.tag}
@@ -78,17 +109,34 @@ export default function ShopPage() {
                         <div className="flex justify-between items-start">
                             <div>
                                 <span className="text-xs uppercase tracking-widest text-[#11430F] font-bold mb-1 block">{product.category}</span>
-                                <h4 className="text-gray-900 font-medium text-xl leading-snug">{product.name}</h4>
+                                <h4 className="text-gray-900 font-medium text-xl leading-snug">
+                                  {product.category === 'Bikes' || product.category === 'Electric Bikes' ? (
+                                    <Link href={`/bikes/${product.id}`} className="hover:text-[#11430F]">{product.name}</Link>
+                                  ) : product.name}
+                                </h4>
                             </div>
                         </div>
                         <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-200/50">
                             <span className="text-gray-900 font-bold text-lg">{product.price}</span>
-                            <button 
-                                onClick={() => addToCart(product)}
-                                className="bg-[#11430F] text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black transition-colors duration-300 text-xl"
-                            >
-                                +
-                            </button>
+                            {product.id === 39 ? (
+                              <a
+                                href={product.sourceUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label={`View ${product.name} on Kilimall`}
+                                className="rounded-full bg-[#11430F] px-4 py-2 text-sm text-white transition-colors hover:bg-black"
+                              >
+                                View deal
+                              </a>
+                            ) : (
+                              <button
+                                  onClick={() => addToCart(product)}
+                                  aria-label={`Add ${product.name} to cart`}
+                                  className="bg-[#11430F] text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black transition-colors duration-300 text-xl"
+                              >
+                                  +
+                              </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -105,5 +153,13 @@ export default function ShopPage() {
 
       </div>
     </main>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-white pt-32" />}>
+      <ShopContent />
+    </Suspense>
   );
 }

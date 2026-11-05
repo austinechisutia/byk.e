@@ -35,7 +35,7 @@ const Navbar = () => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const router = useRouter();
-  const isDarkTheme = pathname === '/bestsellers' || pathname === '/gallery' || pathname === '/shop' || pathname === '/about' || pathname === '/checkout' || pathname === '/login' || pathname === '/admin' || pathname === '/forgot-password' || pathname === '/reset-password';
+  const isDarkTheme = pathname === '/bestsellers' || pathname === '/gallery' || pathname === '/shop' || pathname.startsWith('/bikes/') || pathname === '/about' || pathname === '/checkout' || pathname === '/login' || pathname === '/admin' || pathname === '/forgot-password' || pathname === '/reset-password';
   const isFrosted = pathname === '/login' || pathname === '/admin' || pathname === '/forgot-password' || pathname === '/reset-password';
 
   const suggestions = searchQuery.trim().length > 0
