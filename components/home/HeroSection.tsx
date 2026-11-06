@@ -8,8 +8,8 @@ const HeroSection = () => {
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <img
-                    src="/bike.jpg"
-                    alt="Yellow and black bicycle"
+                    src="/electric-bikes/city-electric-bike.jpg"
+                    alt="Yellow and black city electric bike"
                     className="w-full h-full object-cover"
                 />
                 {/* Dark overlay */}

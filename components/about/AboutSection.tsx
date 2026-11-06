@@ -44,8 +44,8 @@ const AboutSection = () => {
         <div className="order-1 md:order-2 relative group">
           <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl relative z-10">
             <img 
-              src="/bike.jpg" 
-              alt="Black and yellow fixed-gear bicycle" 
+              src="/Fixed-Gear City Bicycle.jpg"
+              alt="Yellow fixed-gear city bicycle"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-[#11430F]/10 group-hover:bg-transparent transition-colors duration-500"></div>

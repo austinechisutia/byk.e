@@ -125,7 +125,7 @@ const BestsellersSection = () => {
             <ScrollReveal delay={0.4} className="flex flex-col rounded-xl overflow-hidden bg-[#e9fba7]">
                 <div className="relative aspect-[4/5] w-full bg-[#A8AD8B]">
                     <Link href="/bikes/4" aria-label="View Fixed-Gear City Bicycle details" className="block h-full w-full">
-                      <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="h-full w-full bg-white object-contain p-3" />
+                      <img src="/Fixed-Gear City Bicycle.jpg" alt="Yellow fixed-gear city bicycle" className="h-full w-full bg-white object-contain p-3" />
                     </Link>
                     <span className="absolute top-4 left-4 border border-white/50 text-white bg-black/30 backdrop-blur-sm px-4 py-1 rounded-full text-sm">City</span>
                 </div>
@@ -143,7 +143,7 @@ const BestsellersSection = () => {
                                 id: 4,
                                 name: 'Fixed-Gear City Bicycle',
                                 price: 'Kes 48,000',
-                                image: '/bike.jpg',
+                                image: '/Fixed-Gear City Bicycle.jpg',
                                 category: 'Bikes'
                             })}
                             className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition"

@@ -8,7 +8,7 @@ const FooterSection = () => {
         <footer className="w-full max-w-[1400px] mx-auto px-6 md:px-12 pb-12">
             <div className="bg-[#1a3020] rounded-[3rem] p-12 md:p-24 relative overflow-hidden flex flex-col items-center justify-center text-center">
                 
-                <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="absolute inset-0 w-full h-full object-cover opacity-25" />
+                <img src="/Fixed-Gear City Bicycle.jpg" alt="Yellow fixed-gear city bicycle" className="absolute inset-0 w-full h-full object-cover opacity-25" />
 
                 {/* Main Content */}
                 <div className="relative z-10 flex flex-col items-center">

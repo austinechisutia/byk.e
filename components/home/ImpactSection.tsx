@@ -6,7 +6,7 @@ const ImpactSection = () => {
       <section className="w-full max-w-[1400px] mx-auto px-6 md:px-12 pt-12 md:pt-16 pb-12 font-sans tracking-wide">
         {/* Large Image Block */}
         <ScrollReveal className="relative w-full h-[400px] md:h-[600px] rounded-2xl overflow-hidden shadow-lg mb-8">
-            <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="w-full h-full object-cover" />
+            <img src="/Fixed-Gear City Bicycle.jpg" alt="Yellow fixed-gear city bicycle" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black/30 md:bg-black/20"></div> {/* Subtle dark overlay for text readability */}
             <div className="absolute bottom-8 md:bottom-12 left-6 md:left-12 max-w-2xl pr-6 md:pr-0">
                 <p className="text-white text-xl sm:text-2xl md:text-3xl font-medium leading-snug drop-shadow-md">

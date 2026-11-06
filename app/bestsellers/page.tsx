@@ -99,7 +99,7 @@ export default function BestsellersPage() {
             {/* Card 4 */}
             <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#a5ab8b] group flex flex-col items-center justify-end pb-8">
                 <Link href="/bikes/4" aria-label="View Fixed-Gear City Bicycle details" className="absolute inset-0">
-                  <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="h-full w-full bg-white object-contain p-3" />
+                  <img src="/Fixed-Gear City Bicycle.jpg" alt="Yellow fixed-gear city bicycle" className="h-full w-full bg-white object-contain p-3" />
                 </Link>
                 <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="relative z-10 flex flex-col items-center text-white">
@@ -110,7 +110,7 @@ export default function BestsellersPage() {
                         id: 4,
                         name: 'Fixed-Gear City Bicycle',
                         price: 'Kes 48,000',
-                        image: '/bike.jpg',
+                        image: '/Fixed-Gear City Bicycle.jpg',
                         category: 'Bikes'
                       })}
                       className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
@@ -130,7 +130,7 @@ export default function BestsellersPage() {
                <span className="font-[family-name:var(--font-great-vibes)] text-[4rem] sm:text-[5rem] md:text-[6rem] leading-none text-black whitespace-nowrap">Best Sellers</span>
             </div>
             <div className="w-full md:w-1/2 h-48 md:h-full rounded-2xl md:rounded-none md:rounded-tl-3xl md:rounded-bl-3xl overflow-hidden">
-                <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="w-full h-full object-cover object-center" />
+                <img src="/Fixed-Gear City Bicycle.jpg" alt="Yellow fixed-gear city bicycle" className="w-full h-full object-cover object-center" />
             </div>
         </div>
 
