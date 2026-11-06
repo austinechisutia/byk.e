@@ -93,13 +93,13 @@ function ShopContent() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {filteredProducts.map(product => (
                 <div key={product.id} className="group flex flex-col rounded-2xl overflow-hidden bg-[#f8f9f5] border border-gray-100/50 hover:shadow-xl transition-shadow duration-500">
-                    <div className="relative aspect-[4/5] w-full bg-[#A8AD8B] overflow-hidden">
+                    <div className={`relative aspect-[4/5] w-full overflow-hidden ${product.category === 'Bikes' || product.category === 'Electric Bikes' ? 'bg-white' : 'bg-[#A8AD8B]'}`}>
                         {product.category === 'Bikes' || product.category === 'Electric Bikes' ? (
                           <Link href={`/bikes/${product.id}`} aria-label={`View details for ${product.name}`} className="block h-full w-full">
                             <img
                               src={product.image}
                               alt={product.name}
-                              className="h-full w-full object-cover mix-blend-multiply opacity-90 transition-transform duration-700 group-hover:scale-105"
+                              className="h-full w-full object-contain p-3 transition-transform duration-700 group-hover:scale-[1.02]"
                             />
                           </Link>
                         ) : product.name.toLowerCase().includes('helmet') ? (

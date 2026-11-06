@@ -50,7 +50,7 @@ const rides = [
     title: 'Your own backyard',
     category: 'Neighborhood',
     description: 'Little rides can make the best memories.',
-    image: '/citybike.jpg',
+    image: '/electric-bikes/city-bike.jpg',
     alt: 'Bicycle ready for a neighborhood ride',
     imagePosition: 'center',
   },

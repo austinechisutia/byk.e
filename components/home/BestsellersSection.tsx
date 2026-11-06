@@ -24,9 +24,9 @@ const BestsellersSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Card 1 */}
             <ScrollReveal delay={0.1} className="flex flex-col rounded-xl overflow-hidden bg-[#e9fba7]">
-                <div className="relative aspect-[4/5] w-full bg-[#A8AD8B]">
+                <div className="relative aspect-[4/5] w-full bg-white">
                     <Link href="/bikes/1" aria-label="View City Electric Bike details" className="block h-full w-full">
-                      <img src="/electric-bike-placeholder.svg" alt="Illustrative City Electric Bike" className="w-full h-full object-cover" />
+                      <img src="/electric-bikes/city-electric-bike.jpg" alt="City electric bike" className="h-full w-full object-contain p-3" />
                     </Link>
                     <span className="absolute top-4 left-4 border border-white/50 text-white bg-black/30 backdrop-blur-sm px-4 py-1 rounded-full text-sm">Electric</span>
                 </div>
@@ -44,7 +44,7 @@ const BestsellersSection = () => {
                                 id: 1,
                                 name: 'City Electric Bike',
                                 price: 'Kes 145,000',
-                                image: '/bike.jpg',
+                                image: '/electric-bikes/city-electric-bike.jpg',
                                 category: 'Electric Bikes'
                             })}
                             className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition"
@@ -57,9 +57,9 @@ const BestsellersSection = () => {
 
             {/* Card 2 */}
             <ScrollReveal delay={0.2} className="flex flex-col rounded-xl overflow-hidden bg-[#e9fba7]">
-                <div className="relative aspect-[4/5] w-full bg-[#A8AD8B]">
+                <div className="relative aspect-[4/5] w-full bg-white">
                     <Link href="/bikes/2" aria-label="View Trail Electric Bike details" className="block h-full w-full">
-                      <img src="/electric-bike-placeholder.svg" alt="Illustrative Trail Electric Bike" className="w-full h-full object-cover" />
+                      <img src="/electric-bikes/trail-electric-bike.jpg" alt="Trail electric bike" className="h-full w-full object-contain p-3" />
                     </Link>
                     <span className="absolute top-4 left-4 border border-white/50 text-white bg-black/30 backdrop-blur-sm px-4 py-1 rounded-full text-sm">Electric</span>
                 </div>
@@ -77,7 +77,7 @@ const BestsellersSection = () => {
                                 id: 2,
                                 name: 'Trail Electric Bike',
                                 price: 'Kes 198,000',
-                                image: '/bike.jpg',
+                                image: '/electric-bikes/trail-electric-bike.jpg',
                                 category: 'Electric Bikes'
                             })}
                             className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition"
@@ -90,9 +90,9 @@ const BestsellersSection = () => {
 
             {/* Card 3 */}
             <ScrollReveal delay={0.3} className="flex flex-col rounded-xl overflow-hidden bg-[#e9fba7]">
-                <div className="relative aspect-[4/5] w-full bg-[#A8AD8B]">
+                <div className="relative aspect-[4/5] w-full bg-white">
                     <Link href="/bikes/3" aria-label="View Compact Folding E-Bike details" className="block h-full w-full">
-                      <img src="/electric-bike-placeholder.svg" alt="Illustrative Compact Folding E-Bike" className="w-full h-full object-cover" />
+                      <img src="/electric-bikes/compact-folding-e-bike.jpg" alt="Compact folding electric bike" className="h-full w-full object-contain p-3" />
                     </Link>
                     <span className="absolute top-4 left-4 border border-white/50 text-white bg-black/30 backdrop-blur-sm px-4 py-1 rounded-full text-sm">Folding</span>
                 </div>
@@ -110,7 +110,7 @@ const BestsellersSection = () => {
                                 id: 3,
                                 name: 'Compact Folding E-Bike',
                                 price: 'Kes 132,000',
-                                image: '/bike.jpg',
+                                image: '/electric-bikes/compact-folding-e-bike.jpg',
                                 category: 'Electric Bikes'
                             })}
                             className="bg-[#11430F] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#1a5c17] transition"
@@ -125,7 +125,7 @@ const BestsellersSection = () => {
             <ScrollReveal delay={0.4} className="flex flex-col rounded-xl overflow-hidden bg-[#e9fba7]">
                 <div className="relative aspect-[4/5] w-full bg-[#A8AD8B]">
                     <Link href="/bikes/4" aria-label="View Fixed-Gear City Bicycle details" className="block h-full w-full">
-                      <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="w-full h-full object-cover" />
+                      <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="h-full w-full bg-white object-contain p-3" />
                     </Link>
                     <span className="absolute top-4 left-4 border border-white/50 text-white bg-black/30 backdrop-blur-sm px-4 py-1 rounded-full text-sm">City</span>
                 </div>

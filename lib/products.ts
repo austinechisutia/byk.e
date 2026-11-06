@@ -9,9 +9,9 @@ export interface CatalogProduct {
 }
 
 export const products: CatalogProduct[] = [
-  { id: 1, name: 'City Electric Bike', category: 'Electric Bikes', price: 'Kes 145,000', image: '/electric-bike-placeholder.svg', tag: 'Electric' },
-  { id: 2, name: 'Trail Electric Bike', category: 'Electric Bikes', price: 'Kes 198,000', image: '/electric-bike-placeholder.svg', tag: 'Electric' },
-  { id: 3, name: 'Compact Folding E-Bike', category: 'Electric Bikes', price: 'Kes 132,000', image: '/electric-bike-placeholder.svg', tag: 'Folding' },
+  { id: 1, name: 'City Electric Bike', category: 'Electric Bikes', price: 'Kes 145,000', image: '/electric-bikes/city-electric-bike.jpg', tag: 'Electric' },
+  { id: 2, name: 'Trail Electric Bike', category: 'Electric Bikes', price: 'Kes 198,000', image: '/electric-bikes/trail-electric-bike.jpg', tag: 'Electric' },
+  { id: 3, name: 'Compact Folding E-Bike', category: 'Electric Bikes', price: 'Kes 132,000', image: '/electric-bikes/compact-folding-e-bike.jpg', tag: 'Folding' },
   { id: 4, name: 'Fixed-Gear City Bicycle', category: 'Bikes', price: 'Kes 48,000', image: '/bike.jpg', tag: 'Fixed Gear' },
   { id: 5, name: 'Trail Hybrid Bicycle', category: 'Bikes', price: 'Kes 62,000', image: '/bicycle-placeholder.svg', tag: 'Hybrid' },
   { id: 6, name: 'E-Bike Replacement Battery', category: 'Parts', price: 'Kes 38,000', image: '/bike-parts-placeholder.svg', tag: 'E-Bike Part' },
@@ -47,10 +47,10 @@ export const products: CatalogProduct[] = [
   { id: 31, name: 'Full-Suspension Mountain Bicycle', category: 'Bikes', price: 'Kes 145,000', image: '/bicycle-placeholder.svg', tag: 'Mountain' },
   { id: 32, name: 'Folding City Bicycle', category: 'Bikes', price: 'Kes 55,000', image: '/bicycle-placeholder.svg', tag: 'Folding' },
   { id: 33, name: 'Touring Bicycle', category: 'Bikes', price: 'Kes 98,000', image: '/bicycle-placeholder.svg', tag: 'Touring' },
-  { id: 34, name: 'Electric Road Bike', category: 'Electric Bikes', price: 'Kes 240,000', image: '/electric-bike-placeholder.svg', tag: 'Road' },
-  { id: 35, name: 'Electric Mountain Bike', category: 'Electric Bikes', price: 'Kes 265,000', image: '/electric-bike-placeholder.svg', tag: 'Mountain' },
-  { id: 36, name: 'Electric Gravel Bike', category: 'Electric Bikes', price: 'Kes 285,000', image: '/electric-bike-placeholder.svg', tag: 'Gravel' },
-  { id: 37, name: 'Electric Cargo Bike', category: 'Electric Bikes', price: 'Kes 295,000', image: '/electric-bike-placeholder.svg', tag: 'Cargo' },
+  { id: 34, name: 'Electric Road Bike', category: 'Electric Bikes', price: 'Kes 240,000', image: '/electric-bikes/electric-road-bike.jpg', tag: 'Road' },
+  { id: 35, name: 'Electric Mountain Bike', category: 'Electric Bikes', price: 'Kes 265,000', image: '/electric-bikes/electric-mountain-bike.jpg', tag: 'Mountain' },
+  { id: 36, name: 'Electric Gravel Bike', category: 'Electric Bikes', price: 'Kes 285,000', image: '/electric-bikes/electric-gravel-bike.jpg', tag: 'Gravel' },
+  { id: 37, name: 'Electric Cargo Bike', category: 'Electric Bikes', price: 'Kes 295,000', image: '/electric-bikes/electric-cargo-bike.jpg', tag: 'Cargo' },
   { id: 38, name: 'Cargo Bicycle', category: 'Bikes', price: 'Kes 120,000', image: '/bicycle-placeholder.svg', tag: 'Cargo' },
   { id: 39, name: 'Kids 16-Inch Bicycle (Pink/Purple)', category: 'Bikes', price: 'KSh 6,499', image: '/bicycle-placeholder.svg', tag: 'Under KSh 10k', sourceUrl: 'https://www.kilimall.co.ke/listing/1000423667-Girls-heavy-duty-bike-size-16-49-years-strong-and-durable-BRAND-NEW-KIDS-BICYCLES-SIZE-16-pink-and-purple' },
   { id: 40, name: 'Short-Sleeve Cycling Jersey', category: 'Riding Clothing', price: 'Kes 4,500', image: '/riding-clothing-placeholder.svg', tag: 'Breathable' },

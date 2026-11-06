@@ -25,10 +25,11 @@ export default function BestsellersPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 md:mb-24">
             
             {/* Card 1 */}
-            <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#a5ab8b] group flex flex-col items-center justify-end pb-8">
+            <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-white group flex flex-col items-center justify-end pb-8">
                 <Link href="/bikes/1" aria-label="View City Electric Bike details" className="absolute inset-0">
-                  <img src="/electric-bike-placeholder.svg" alt="Illustrative City Electric Bike" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <img src="/electric-bikes/city-electric-bike.jpg" alt="City electric bike" className="h-full w-full object-contain p-3" />
                 </Link>
+                <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="relative z-10 flex flex-col items-center text-white">
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
                     <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">City Electric</span>
@@ -37,7 +38,7 @@ export default function BestsellersPage() {
                         id: 1,
                         name: 'City Electric Bike',
                         price: 'Kes 145,000',
-                        image: '/bike.jpg',
+                        image: '/electric-bikes/city-electric-bike.jpg',
                         category: 'Electric Bikes'
                       })}
                       className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
@@ -48,10 +49,11 @@ export default function BestsellersPage() {
             </div>
 
             {/* Card 2 */}
-            <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#a5ab8b] group flex flex-col items-center justify-end pb-8">
+            <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-white group flex flex-col items-center justify-end pb-8">
                 <Link href="/bikes/2" aria-label="View Trail Electric Bike details" className="absolute inset-0">
-                  <img src="/electric-bike-placeholder.svg" alt="Illustrative Trail Electric Bike" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <img src="/electric-bikes/trail-electric-bike.jpg" alt="Trail electric bike" className="h-full w-full object-contain p-3" />
                 </Link>
+                <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="relative z-10 flex flex-col items-center text-white">
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
                     <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Trail Electric</span>
@@ -60,7 +62,7 @@ export default function BestsellersPage() {
                         id: 2,
                         name: 'Trail Electric Bike',
                         price: 'Kes 198,000',
-                        image: '/bike.jpg',
+                        image: '/electric-bikes/trail-electric-bike.jpg',
                         category: 'Electric Bikes'
                       })}
                       className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
@@ -71,10 +73,11 @@ export default function BestsellersPage() {
             </div>
 
             {/* Card 3 */}
-            <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#a5ab8b] group flex flex-col items-center justify-end pb-8">
+            <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-white group flex flex-col items-center justify-end pb-8">
                 <Link href="/bikes/3" aria-label="View Compact Folding E-Bike details" className="absolute inset-0">
-                  <img src="/electric-bike-placeholder.svg" alt="Illustrative Compact Folding E-Bike" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <img src="/electric-bikes/compact-folding-e-bike.jpg" alt="Compact folding electric bike" className="h-full w-full object-contain p-3" />
                 </Link>
+                <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="relative z-10 flex flex-col items-center text-white">
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
                     <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Folding E-Bike</span>
@@ -83,7 +86,7 @@ export default function BestsellersPage() {
                         id: 3,
                         name: 'Compact Folding E-Bike',
                         price: 'Kes 132,000',
-                        image: '/bike.jpg',
+                        image: '/electric-bikes/compact-folding-e-bike.jpg',
                         category: 'Electric Bikes'
                       })}
                       className="px-5 py-1 text-sm border border-white rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/30 transition"
@@ -96,8 +99,9 @@ export default function BestsellersPage() {
             {/* Card 4 */}
             <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#a5ab8b] group flex flex-col items-center justify-end pb-8">
                 <Link href="/bikes/4" aria-label="View Fixed-Gear City Bicycle details" className="absolute inset-0">
-                  <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="h-full w-full bg-white object-contain p-3" />
                 </Link>
+                <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="relative z-10 flex flex-col items-center text-white">
                     <span className="text-base md:text-lg font-medium mb-1 drop-shadow-sm">Explore</span>
                     <span className="font-[family-name:var(--font-great-vibes)] text-3xl md:text-4xl mb-3 drop-shadow-md">Fixed-Gear City</span>

@@ -44,8 +44,8 @@ export default function BikeDetailsPage() {
         </Link>
 
         <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
-          <div className="overflow-hidden rounded-2xl bg-[#e7eae1]">
-            <img src={product.image} alt={product.name} className="h-full max-h-[680px] min-h-[360px] w-full object-cover" />
+          <div className="aspect-[4/3] overflow-hidden rounded-2xl bg-white">
+            <img src={product.image} alt={product.name} className="h-full w-full object-contain p-4" />
           </div>
 
           <section className="flex flex-col justify-center">
