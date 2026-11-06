@@ -12,11 +12,14 @@ function ShopContent() {
   const [activeCategory, setActiveCategory] = useState('All');
   const { addToCart } = useCart();
   const searchParams = useSearchParams();
-  const searchQuery = searchParams.get('q')?.toLowerCase().trim() ?? '';
+  const helmetCollection = searchParams.get('category') === 'helmets';
+  const searchQuery = helmetCollection ? '' : searchParams.get('q')?.toLowerCase().trim() ?? '';
 
   const filteredProducts = products.filter(p => {
     const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
-    const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery) || p.category.toLowerCase().includes(searchQuery);
+    const matchesSearch = helmetCollection
+      ? p.name.toLowerCase().includes('helmet')
+      : !searchQuery || p.name.toLowerCase().includes(searchQuery) || p.category.toLowerCase().includes(searchQuery);
     return matchesCategory && matchesSearch;
   });
 
@@ -27,8 +30,15 @@ function ShopContent() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-8">
           <div>
-              <h1 className="text-4xl md:text-6xl text-gray-900 font-serif italic mb-4">Shop Collection</h1>
-              {searchQuery ? (
+              <h1 className="text-4xl md:text-6xl text-gray-900 font-serif italic mb-4">
+                {helmetCollection ? 'Helmet Types' : 'Shop Collection'}
+              </h1>
+              {helmetCollection ? (
+                <p className="text-xl text-gray-600 max-w-lg">
+                  Explore commuter, road, mountain, full-face, BMX, and kids&apos; helmets.
+                  <a href="/shop" className="ml-3 text-sm underline text-[#11430F] hover:text-black">Shop all</a>
+                </p>
+              ) : searchQuery ? (
                 <p className="text-xl text-gray-600 max-w-lg">
                   Showing results for <span className="font-semibold text-gray-900">&ldquo;{searchParams.get('q')}&rdquo;</span>
                   <a href="/shop" className="ml-3 text-sm underline text-[#11430F] hover:text-black">Clear</a>
@@ -38,7 +48,7 @@ function ShopContent() {
                   Browse bikes, riding gear, accessories, and Byk.e merchandise.
                 </p>
               )}
-              <p className="mt-3 text-sm text-gray-500">Illustrative product artwork and sample KES prices. Parts may vary by bike; confirm size, fit, drivetrain, brake, axle, and e-bike system compatibility and availability before purchase.</p>
+              <p className="mt-3 text-sm text-gray-500">Illustrative product artwork and sample KES prices. Confirm helmet fit and locally accepted safety certification, parts compatibility, and availability before purchase.</p>
               <p className="mt-3 max-w-2xl text-sm text-gray-600">
                 Budget find: a 16-inch children&apos;s bicycle was{' '}
                 <a
@@ -92,6 +102,14 @@ function ShopContent() {
                               className="h-full w-full object-cover mix-blend-multiply opacity-90 transition-transform duration-700 group-hover:scale-105"
                             />
                           </Link>
+                        ) : product.name.toLowerCase().includes('helmet') ? (
+                          <Link href="/shop?category=helmets" aria-label="Explore all bicycle helmet types" className="block h-full w-full">
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="h-full w-full object-cover mix-blend-multiply opacity-90 transition-transform duration-700 group-hover:scale-105"
+                            />
+                          </Link>
                         ) : (
                           <img
                             src={product.image}
@@ -112,8 +130,15 @@ function ShopContent() {
                                 <h4 className="text-gray-900 font-medium text-xl leading-snug">
                                   {product.category === 'Bikes' || product.category === 'Electric Bikes' ? (
                                     <Link href={`/bikes/${product.id}`} className="hover:text-[#11430F]">{product.name}</Link>
+                                  ) : product.name.toLowerCase().includes('helmet') ? (
+                                    <Link href="/shop?category=helmets" className="hover:text-[#11430F]">{product.name}</Link>
                                   ) : product.name}
                                 </h4>
+                                {product.name.toLowerCase().includes('helmet') && (
+                                  <Link href="/shop?category=helmets" className="mt-2 inline-block text-sm text-[#11430F] underline underline-offset-4">
+                                    View helmet types
+                                  </Link>
+                                )}
                             </div>
                         </div>
                         <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-200/50">

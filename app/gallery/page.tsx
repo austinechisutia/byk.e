@@ -1,45 +1,112 @@
-"use client";
-
-import React from 'react';
 import Link from 'next/link';
+
+const rides = [
+  {
+    title: 'The daily commute',
+    category: 'City rides',
+    description: 'Make the morning route your own.',
+    image:
+      'https://images.unsplash.com/photo-1541625602330-2277a4c46182?auto=format&fit=crop&w=1200&q=85',
+    alt: 'Cyclist riding along a city street',
+    imagePosition: 'center',
+  },
+  {
+    title: 'Take the long way',
+    category: 'Trails & hikes',
+    description: 'Find fresh air beyond the pavement.',
+    image:
+      'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=85',
+    alt: 'Rider enjoying an outdoor trail',
+    imagePosition: 'center',
+  },
+  {
+    title: 'Good things on the way',
+    category: 'Delivery days',
+    description: 'Bring the neighborhood a little closer.',
+    image:
+      'https://images.unsplash.com/photo-1511994298241-608e28f14fde?auto=format&fit=crop&w=1200&q=85',
+    alt: 'Cyclist out for a ride',
+    imagePosition: 'center',
+  },
+  {
+    title: 'Leave the jam behind',
+    category: 'Beat the traffic',
+    description: 'Keep moving when the roads slow down.',
+    image:
+      'https://images.unsplash.com/photo-1471506480208-91b3a4cc78be?auto=format&fit=crop&w=1200&q=85',
+    alt: 'Cyclists riding together on an open road',
+    imagePosition: 'center',
+  },
+  {
+    title: 'Race day energy',
+    category: 'Competition',
+    description: 'Big goals are better on two wheels.',
+    image:
+      'https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?auto=format&fit=crop&w=1200&q=85',
+    alt: 'Bicycle ready for a day of riding',
+    imagePosition: 'center',
+  },
+  {
+    title: 'Your own backyard',
+    category: 'Neighborhood',
+    description: 'Little rides can make the best memories.',
+    image: '/citybike.jpg',
+    alt: 'Bicycle ready for a neighborhood ride',
+    imagePosition: 'center',
+  },
+];
 
 export default function GalleryPage() {
   return (
-    <main className="bg-[#f9f9f7] min-h-screen pt-24 md:pt-32 pb-16 md:pb-24 overflow-hidden">
-      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 font-sans tracking-wide">
-        
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start mb-10 md:mb-16 gap-6 md:gap-0">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl text-gray-800 font-normal leading-tight">
-            Bikes for <span className="font-serif italic">city streets</span>, <br/>
-            open roads, and <span className="font-serif italic font-medium">new routes</span>
-          </h1>
-          <p className="text-gray-600 max-w-sm">A look at the bike currently featured in the Byk.e collection.</p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_0.6fr] gap-10 items-center">
-          <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-gray-200">
-            <img src="/bike.jpg" alt="Black and yellow fixed-gear bicycle" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-black/15"></div>
-            <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 text-white">
-              <p className="text-sm uppercase tracking-widest">Urban riding</p>
-              <h2 className="text-3xl md:text-5xl font-medium mt-2">Fixed-gear bicycle</h2>
-            </div>
+    <main className="min-h-screen overflow-hidden bg-[#f9f9f7] pb-16 pt-24 md:pb-24 md:pt-32">
+      <div className="mx-auto w-full max-w-[1400px] px-6 font-sans tracking-wide md:px-12">
+        <header className="mb-10 flex flex-col justify-between gap-6 md:mb-14 md:flex-row md:items-end">
+          <div>
+            <p className="mb-4 text-xs uppercase tracking-[0.25em] text-[#52704e]">
+              The Byk.e ride gallery
+            </p>
+            <h1 className="max-w-3xl text-3xl font-normal leading-tight text-gray-900 sm:text-4xl md:text-5xl">
+              One bike, <span className="font-serif italic">many ways</span> to get there.
+            </h1>
           </div>
-          <div className="space-y-5">
-            <h2 className="text-2xl md:text-3xl font-medium text-gray-900">Find your kind of ride</h2>
-            <p className="text-gray-600 leading-relaxed">Browse electric bikes, city and hybrid bicycles, replacement parts, and everyday riding accessories.</p>
-            <div className="flex flex-wrap gap-3 pt-2">
-              {['Electric Bikes', 'Bikes', 'Parts', 'Accessories'].map((category) => (
-                <Link key={category} href="/shop" className="px-4 py-2 border border-gray-300 text-gray-800 hover:border-[#11430F] hover:text-[#11430F] transition-colors">
-                  {category}
-                </Link>
-              ))}
-            </div>
-            <p className="text-xs text-gray-500 pt-2">Only the featured bicycle is photographed here. Product images and specifications should be added for each listing.</p>
-          </div>
-        </div>
+          <p className="max-w-sm leading-relaxed text-gray-600">
+            From busy streets to open trails, see where a good ride can take you.
+          </p>
+        </header>
 
+        <section aria-label="Riders and bikes in different places" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {rides.map((ride, index) => (
+            <article key={ride.title} className="group relative isolate aspect-[4/5] overflow-hidden rounded-xl bg-gray-200">
+              <img
+                src={ride.image}
+                alt={ride.alt}
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                style={{ objectPosition: ride.imagePosition }}
+                loading={index < 3 ? 'eager' : 'lazy'}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-black/5" />
+              <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-8">
+                <p className="mb-3 text-xs uppercase tracking-[0.2em] text-white/80">
+                  {ride.category}
+                </p>
+                <h2 className="text-2xl font-medium md:text-3xl">{ride.title}</h2>
+                <p className="mt-2 text-sm text-white/85">{ride.description}</p>
+              </div>
+            </article>
+          ))}
+        </section>
+
+        <div className="mt-12 flex flex-col items-start justify-between gap-5 border-t border-gray-200 pt-8 sm:flex-row sm:items-center">
+          <p className="max-w-xl text-gray-600">
+            What will your next ride look like? Find a bike for your route and make it yours.
+          </p>
+          <Link
+            href="/shop"
+            className="border border-[#11430F] px-6 py-3 text-sm text-[#11430F] transition-colors hover:bg-[#11430F] hover:text-white"
+          >
+            Find your bike
+          </Link>
+        </div>
       </div>
     </main>
   );
