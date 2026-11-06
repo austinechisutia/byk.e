@@ -15,7 +15,7 @@ const Footer = () => {
                             Byk.e brings electric bikes, bicycles, parts, and ride essentials together for your next journey.
                         </h2>
                         <Link 
-                            href="#" 
+                            href="/shop"
                             className="inline-flex items-center gap-3 px-8 py-4 border border-gray-400 rounded-full text-xl font-medium text-gray-700 hover:bg-gray-50 transition-colors group"
                         >
                             Shop bikes
